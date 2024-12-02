@@ -4,9 +4,12 @@ import com.service.working.hours.entity.TrainingRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface TrainingRecordRepository extends JpaRepository<TrainingRecord, Long> {
 
     List<TrainingRecord> findByTrainerUsername(String trainerUsername);
@@ -20,4 +23,5 @@ public interface TrainingRecordRepository extends JpaRepository<TrainingRecord, 
                                                       @Param("year") Integer year,
                                                       @Param("month") Integer month);
 
+    Optional<TrainingRecord> findByTrainerUsernameAndYearAndMonth(String trainerUsername, Integer year, Integer month);
 }

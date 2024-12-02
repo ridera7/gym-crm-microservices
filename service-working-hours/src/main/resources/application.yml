@@ -20,4 +20,4 @@ server:
 logging:
   level:
     org:
-      hibernate: DEBUG
+      hibernate: INFO
