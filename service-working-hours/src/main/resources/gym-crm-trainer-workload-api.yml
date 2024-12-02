@@ -109,7 +109,7 @@ components:
           example: 90
         actionType:
           type: string
-          enum: [ADD, DELETE]
+          enum: [ ADD, DELETE ]
           description: Action to perform on the workload
           example: ADD
       required:

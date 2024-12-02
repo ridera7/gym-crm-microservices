@@ -29,6 +29,15 @@ public class TrainingServiceImpl implements TrainingService {
 
         TrainingRecord trainingRecord = trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month)
                 .orElseGet(() -> createTrainingRecord(workloadRequest));
+        updateWorkload(workloadRequest, trainingRecord, duration);
+    }
+
+    @Override
+    public int getMonthlyTrainingHours(String username, Integer year, Integer month) {
+        return trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth(username, year, month);
+    }
+
+    private void updateWorkload(TrainerWorkloadRequest workloadRequest, TrainingRecord trainingRecord, int duration) {
         int workload = trainingRecord.getDurationSummary();
 
         switch (workloadRequest.getActionType().toString().toUpperCase()) {
@@ -46,11 +55,6 @@ public class TrainingServiceImpl implements TrainingService {
                 .durationSummary(workload).build();
 
         trainingRecordRepository.save(updateTrainingRecord);
-    }
-
-    @Override
-    public int getMonthlyTrainingHours(String username, Integer year, Integer month) {
-        return trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth(username, year, month);
     }
 
     private TrainingRecord createTrainingRecord(TrainerWorkloadRequest workloadRequest) {

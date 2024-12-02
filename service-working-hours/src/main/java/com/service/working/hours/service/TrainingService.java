@@ -8,4 +8,4 @@ public interface TrainingService {
 
     int getMonthlyTrainingHours(String username, Integer year, Integer month);
 
-    }
+}

@@ -3,7 +3,7 @@ package com.service.working.hours.controller;
 import com.service.working.hours.rest.dto.ErrorResponse;
 import com.service.working.hours.rest.dto.TrainerWorkloadRequest;
 import com.service.working.hours.rest.dto.TrainerWorkloadResponse;
-import com.service.working.hours.service.impl.TrainingServiceImpl;
+import com.service.working.hours.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TrainerController {
 
-    private final TrainingServiceImpl trainingServiceImpl;
+    private final TrainingService trainingService;
 
     @PostMapping("/summary")
     public ResponseEntity<?> modifyTrainerWorkload(@RequestBody TrainerWorkloadRequest workloadRequest) {
         try {
-            trainingServiceImpl.recordTrainingSession(workloadRequest);
+            trainingService.recordTrainingSession(workloadRequest);
             TrainerWorkloadResponse response = new TrainerWorkloadResponse();
             response.setMessage("Workload updated successfully");
 
@@ -51,7 +51,7 @@ public class TrainerController {
         }
 
         try {
-            int totalDuration = trainingServiceImpl.getMonthlyTrainingHours(username, year, month);
+            int totalDuration = trainingService.getMonthlyTrainingHours(username, year, month);
 
             return ResponseEntity.ok(totalDuration);
         } catch (Exception e) {
