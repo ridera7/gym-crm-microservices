@@ -2,6 +2,8 @@ package com.service.working.hours.service.impl;
 
 import com.service.working.hours.entity.Trainer;
 import com.service.working.hours.entity.TrainingRecord;
+import com.service.working.hours.exception.NotFoundException;
+import com.service.working.hours.exception.ValidationException;
 import com.service.working.hours.repository.TrainerRepository;
 import com.service.working.hours.repository.TrainingRecordRepository;
 import com.service.working.hours.rest.dto.TrainerWorkloadRequest;
@@ -48,7 +50,7 @@ public class TrainingServiceImpl implements TrainingService {
                 workload -= duration;
                 break;
             default:
-                throw new RuntimeException("Action is unknown");
+                throw new ValidationException("Action is unknown");
         }
 
         TrainingRecord updateTrainingRecord = trainingRecord.toBuilder()
@@ -95,7 +97,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     public Trainer getTrainer(String username) {
         return trainerRepository.findById(username).orElseThrow(() ->
-                new RuntimeException("Trainer not found: " + username));
+                new NotFoundException("Trainer not found: " + username));
     }
 
     public Integer getTotalDuration(String username, Integer year, Integer month) {
