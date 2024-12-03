@@ -2,7 +2,6 @@ package com.service.working.hours.service.impl;
 
 import com.service.working.hours.entity.Trainer;
 import com.service.working.hours.entity.TrainingRecord;
-import com.service.working.hours.exception.NotFoundException;
 import com.service.working.hours.exception.ValidationException;
 import com.service.working.hours.repository.TrainerRepository;
 import com.service.working.hours.repository.TrainingRecordRepository;
@@ -11,8 +10,6 @@ import com.service.working.hours.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -83,24 +80,4 @@ public class TrainingServiceImpl implements TrainingService {
         return newTrainer;
     }
 
-    public Trainer saveTrainer(Trainer trainer) {
-        return trainerRepository.save(trainer);
-    }
-
-    public TrainingRecord saveTrainingRecord(TrainingRecord trainingRecord) {
-        return trainingRecordRepository.save(trainingRecord);
-    }
-
-    public List<Trainer> getAllTrainers() {
-        return trainerRepository.findAll();
-    }
-
-    public Trainer getTrainer(String username) {
-        return trainerRepository.findById(username).orElseThrow(() ->
-                new NotFoundException("Trainer not found: " + username));
-    }
-
-    public Integer getTotalDuration(String username, Integer year, Integer month) {
-        return trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth(username, year, month);
-    }
 }
