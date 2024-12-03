@@ -104,6 +104,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
             case UNAUTHORIZED_ERROR_CODE -> "User is not authorized for requested operation";
             case PERSISTENCE_ERROR_CODE -> "Error detected during persistence";
             case ENTITY_NOT_FOUND_ERROR_CODE -> "NotFoundError: Entity not found";
+            case VALIDATION_ERROR_CODE -> "Validation Error";
             default -> "Internal Error";
         };
     }

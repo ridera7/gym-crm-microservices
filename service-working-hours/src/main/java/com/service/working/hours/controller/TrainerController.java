@@ -1,11 +1,11 @@
 package com.service.working.hours.controller;
 
-import com.service.working.hours.rest.dto.ErrorResponse;
 import com.service.working.hours.rest.dto.TrainerWorkloadRequest;
 import com.service.working.hours.rest.dto.TrainerWorkloadResponse;
 import com.service.working.hours.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,45 +22,19 @@ public class TrainerController {
 
     @PostMapping("/summary")
     public ResponseEntity<?> modifyTrainerWorkload(@RequestBody TrainerWorkloadRequest workloadRequest) {
-        try {
-            trainingService.recordTrainingSession(workloadRequest);
-            TrainerWorkloadResponse response = new TrainerWorkloadResponse();
-            response.setMessage("Workload updated successfully");
+        trainingService.recordTrainingSession(workloadRequest);
 
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            ErrorResponse error = new ErrorResponse();
-            error.setError("Error updating workload: " + e.getMessage());
-            error.setCode(400);
-
-            return ResponseEntity.badRequest().body(error);
-        }
+        return ResponseEntity.ok(new TrainerWorkloadResponse().message("Workload updated successfully"));
     }
 
     @GetMapping("/summary")
     public ResponseEntity<?> getTrainerMonthlySummary(
-            @RequestParam String username,
-            @RequestParam Integer year,
-            @RequestParam Integer month) {
-        if (month < 1 || month > 12) {
-            ErrorResponse error = new ErrorResponse();
-            error.setError("Invalid parameters: month must be between 1 and 12");
-            error.setCode(400);
+            @NonNull @RequestParam String username,
+            @NonNull @RequestParam Integer year,
+            @NonNull @RequestParam Integer month) {
+        int totalDuration = trainingService.getMonthlyTrainingHours(username, year, month);
 
-            return ResponseEntity.badRequest().body(error);
-        }
-
-        try {
-            int totalDuration = trainingService.getMonthlyTrainingHours(username, year, month);
-
-            return ResponseEntity.ok(totalDuration);
-        } catch (Exception e) {
-            ErrorResponse error = new ErrorResponse();
-            error.setError("Error retrieving summary: " + e.getMessage());
-            error.setCode(400);
-
-            return ResponseEntity.badRequest().body(error);
-        }
+        return ResponseEntity.ok(totalDuration);
     }
 }
 

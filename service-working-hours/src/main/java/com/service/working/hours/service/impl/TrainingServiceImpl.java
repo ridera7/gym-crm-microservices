@@ -33,7 +33,15 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public int getMonthlyTrainingHours(String username, Integer year, Integer month) {
+        validateMonth(month);
+
         return trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth(username, year, month);
+    }
+
+    private static void validateMonth(Integer month) {
+        if (month < 1 || month > 12) {
+            throw  new ValidationException("Invalid parameters: month must be between 1 and 12");
+        }
     }
 
     private void updateWorkload(TrainerWorkloadRequest workloadRequest, TrainingRecord trainingRecord, int duration) {
