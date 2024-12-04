@@ -1,0 +1,70 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 add table trainer",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "trainer",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint",
+                    "constraints": {
+                      "primaryKey": true,
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "specialization",
+                    "type": "bigint",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "unique": true,
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseTableName": "trainer",
+              "baseColumnNames": "user_id",
+              "constraintName": "fk_trainer_user",
+              "referencedTableName": "user",
+              "referencedColumnNames": "id",
+              "onDelete": "CASCADE",
+              "onUpdate": "CASCADE"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseTableName": "trainer",
+              "baseColumnNames": "specialization",
+              "constraintName": "fk_trainer_specialization",
+              "referencedTableName": "training_type",
+              "referencedColumnNames": "id",
+              "onDelete": "CASCADE",
+              "onUpdate": "CASCADE"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

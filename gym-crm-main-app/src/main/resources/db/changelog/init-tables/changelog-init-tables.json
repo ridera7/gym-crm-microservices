@@ -1,0 +1,29 @@
+{
+  "databaseChangeLog": [
+    {
+      "include": {
+        "file": "db/changelog/init-tables/changelog-create-table-user.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-tables/changelog-create-table-training-type.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-tables/changelog-create-table-trainee.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-tables/changelog-create-table-trainer.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-tables/changelog-create-table-training.json"
+      }
+    }
+  ]
+}

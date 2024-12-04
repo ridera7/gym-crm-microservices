@@ -1,0 +1,67 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 add table trainee2trainer",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "trainee2trainer",
+              "columns": [
+                {
+                  "column": {
+                    "name": "trainee_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "trainer_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "columnNames": "trainee_id, trainer_id",
+              "constraintName": "pk_trainee2trainer",
+              "schemaName": "public",
+              "tableName": "trainee2trainer"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseTableName": "trainee2trainer",
+              "baseColumnNames": "trainee_id",
+              "constraintName": "fk_trainee2trainer_trainee",
+              "referencedTableName": "trainee",
+              "referencedColumnNames": "id",
+              "onDelete": "CASCADE",
+              "onUpdate": "CASCADE"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseTableName": "trainee2trainer",
+              "baseColumnNames": "trainer_id",
+              "constraintName": "fk_trainee2trainer_trainer",
+              "referencedTableName": "trainer",
+              "referencedColumnNames": "id",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

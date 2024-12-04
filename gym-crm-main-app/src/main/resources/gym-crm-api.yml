@@ -1,0 +1,984 @@
+openapi: 3.0.0
+info:
+  title: "Training API"
+  version: "1.0.0"
+  description: "API for Gym CRM Application"
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Staging environment for local development
+paths:
+  /login:
+    post:
+      summary: User login
+      operationId: login
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unathorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login-change:
+    put:
+      summary: Change user login credentials
+      operationId: changeLoginCredentials
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginChangeRequest'
+      responses:
+        '200':
+          description: Login successfully changed
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainee/register:
+    post:
+      summary: Register a new trainee
+      operationId: createTrainee
+      tags:
+        - Trainees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterTraineeRequest'
+      responses:
+        '200':
+          description: Trainee successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainee/{username}:
+    parameters:
+      - $ref: '#/components/parameters/UsernamePathParam'
+    get:
+      summary: Get trainee profile
+      operationId: getTraineeProfile
+      tags:
+        - Trainees
+      responses:
+        '200':
+          description: Trainee profile information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TraineeProfileResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update trainee profile
+      operationId: updateTraineeProfile
+      tags:
+        - Trainees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TraineeUpdateProfileRequest'
+      responses:
+        '200':
+          description: Trainee profile successfully updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      username:
+                        type: string
+                        example: Ivan.Ivanoff
+                  - $ref: '#/components/schemas/TraineeProfileResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete trainee profile
+      operationId: deleteTrainee
+      tags:
+        - Trainees
+      responses:
+        '200':
+          description: Trainee profile successfully deleted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainer/register:
+    post:
+      summary: Register a new trainer
+      operationId: createTrainer
+      tags:
+        - Trainers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterTrainerRequest'
+      responses:
+        '200':
+          description: Trainer profile information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrainerProfileResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainer/{username}:
+    parameters:
+      - $ref: '#/components/parameters/UsernamePathParam'
+    get:
+      summary: Get trainer profile
+      operationId: getTrainerProfile
+      tags:
+        - Trainers
+      responses:
+        '200':
+          description: Trainer profile information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrainerProfileResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update trainer profile
+      operationId: updateTrainerProfile
+      tags:
+        - Trainers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainerUpdateProfileRequest'
+      responses:
+        '200':
+          description: Trainer profile successfully updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      username:
+                        type: string
+                        example: Ivan.Ivanoff
+                  - $ref: '#/components/schemas/TrainerProfileResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainee/{username}/active-trainers:
+    get:
+      summary: Get active trainers not assigned to the trainee
+      operationId: getActiveTrainers
+      tags:
+        - Trainees
+      parameters:
+        - $ref: '#/components/parameters/UsernamePathParam'
+      responses:
+        '200':
+          description: List of active trainers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetListActiveTrainersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainee/{username}/trainers:
+    put:
+      summary: Update trainee's trainer list
+      operationId: updateTrainersList
+      tags:
+        - Trainees
+      parameters:
+        - $ref: '#/components/parameters/UsernamePathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TraineeTrainerListUpdateRequest'
+      responses:
+        '200':
+          description: Trainee's trainer list successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTraineesTrainersListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /training/add:
+    post:
+      summary: Add a new training
+      operationId: createTraining
+      tags:
+        - Trainings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddTrainingRequest'
+      responses:
+        '200':
+          description: Training successfully added
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainee/{username}/trainings:
+    get:
+      summary: Get trainee's trainings
+      operationId: findTraineesTrainings
+      tags:
+        - Trainees
+        - Trainings
+      parameters:
+        - $ref: '#/components/parameters/UsernamePathParam'
+        - $ref: '#/components/parameters/PeriodFromParam'
+        - $ref: '#/components/parameters/PeriodToParam'
+        - $ref: '#/components/parameters/TrainerNameParam'
+        - $ref: '#/components/parameters/TrainingTypeParam'
+      responses:
+        '200':
+          description: List of trainee's trainings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTraineesTrainingsListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainer/{username}/trainings:
+    get:
+      summary: Get trainer's trainings
+      operationId: findTrainersTrainings
+      tags:
+        - Trainers
+        - Trainings
+      parameters:
+        - $ref: '#/components/parameters/UsernamePathParam'
+        - $ref: '#/components/parameters/PeriodFromParam'
+        - $ref: '#/components/parameters/PeriodToParam'
+        - $ref: '#/components/parameters/TraineeNameParam'
+      responses:
+        '200':
+          description: List of trainer's trainings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTrainersTrainingsListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainee/{username}/activate:
+    patch:
+      summary: Activate or Deactivate a Trainee
+      operationId: activateDeactivateTrainee
+      tags:
+        - Trainees
+      parameters:
+        - $ref: '#/components/parameters/UsernamePathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateDeactivateRequest'
+      responses:
+        '200':
+          description: Successfully activated or deactivated the trainee.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainee not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /trainer/{username}/activate:
+    patch:
+      summary: Activate or Deactivate a Trainer
+      operationId: activateDeactivateTrainer
+      tags:
+        - Trainers
+      parameters:
+        - $ref: '#/components/parameters/UsernamePathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateDeactivateRequest'
+      responses:
+        '200':
+          description: Successfully activated or deactivated the trainer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Trainer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /training-types:
+    get:
+      summary: Get all available training types
+      operationId: getTrainingTypes
+      tags:
+        - Trainings
+      responses:
+        '200':
+          description: A list of available training types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrainingTypeListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ErrorResponse:
+      $ref: "#/components/schemas/Error"
+    LoginRequest:
+      $ref: '#/components/schemas/LoginCredentials'
+    LoginChangeRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Ivan.Ivanoff
+        oldPassword:
+          type: string
+          example: password1
+        newPassword:
+          type: string
+          example: password2
+      required:
+        - username
+        - oldPassword
+        - newPassword
+    RegisterTraineeRequest:
+      $ref: '#/components/schemas/TraineeProfile'
+    RegisterTrainerRequest:
+      $ref: '#/components/schemas/TrainerProfile'
+    TraineeUpdateProfileRequest:
+      allOf:
+        - $ref: '#/components/schemas/TraineeProfile'
+        - type: object
+          properties:
+            isActive:
+              type: boolean
+              example: true
+      required:
+        - isActive
+    TrainerUpdateProfileRequest:
+      allOf:
+        - $ref: '#/components/schemas/TrainerProfile'
+        - type: object
+          properties:
+            isActive:
+              type: boolean
+              example: true
+      required:
+        - isActive
+    TraineeTrainerListUpdateRequest:
+      type: array
+      items:
+        properties:
+          username:
+            type: string
+            example: Ivan.Ivanoff
+    AddTrainingRequest:
+      type: object
+      properties:
+        traineeUsername:
+          type: string
+          example: Ivan.Ivanoff
+        trainerUsername:
+          type: string
+          example: Petr.Petroff
+        trainingName:
+          type: string
+          example: Morning Motion
+        trainingDate:
+          type: string
+          format: date
+          example: 2024-10-03
+        trainingDuration:
+          type: integer
+          format: int32
+          example: 45
+      required:
+        - traineeUsername
+        - trainerUsername
+        - trainingName
+        - trainingDate
+        - trainingDuration
+    ActivateDeactivateRequest:
+      type: object
+      required:
+        - isActive
+      properties:
+        isActive:
+          type: boolean
+          example: true
+      description: Request body for activating or deactivating a trainee or trainer.
+    RegisterResponse:
+      $ref: '#/components/schemas/LoginCredentials'
+    GetListActiveTrainersResponse:
+      $ref: '#/components/schemas/TrainerList'
+    UpdateTraineesTrainersListResponse:
+      $ref: '#/components/schemas/TrainerList'
+    GetTraineesTrainingsListResponse:
+      $ref: '#/components/schemas/TraineeTrainingsList'
+    GetTrainersTrainingsListResponse:
+      $ref: '#/components/schemas/TrainerTrainingsList'
+    TraineeProfileResponse:
+      allOf:
+        - $ref: '#/components/schemas/TraineeProfile'
+        - type: object
+          properties:
+            isActive:
+              type: boolean
+              example: true
+            trainers:
+              $ref: '#/components/schemas/TrainerList'
+    TrainerProfileResponse:
+      allOf:
+        - $ref: '#/components/schemas/TrainerProfile'
+        - type: object
+          properties:
+            isActive:
+              type: boolean
+            trainees:
+              $ref: '#/components/schemas/TraineeList'
+    TrainingTypeListResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            example: Zumba
+          typeId:
+            type: integer
+            example: 3
+    LoginCredentials:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        username: Ivan.Ivanoff
+        password: 1password2
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Ivan
+        lastName:
+          type: string
+          example: Ivanoff
+      required:
+        - firstName
+        - lastName
+    TraineeProfile:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            dateOfBirth:
+              type: string
+              format: date
+              example: 2000-11-06
+            address:
+              type: string
+              example: st. Sadova 123
+    TrainerProfile:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            specialization:
+              $ref: '#/components/schemas/TrainingType'
+      required:
+        - specialization
+    Training:
+      type: object
+      properties:
+        trainingName:
+          type: string
+          example: Morning Motion
+        trainingDate:
+          type: string
+          format: date
+          example: 2024-10-04
+        trainingType:
+          $ref: '#/components/schemas/TrainingType'
+        trainingDuration:
+          type: integer
+          example: 45
+    TraineeTrainingsListItem:
+      allOf:
+        - $ref: '#/components/schemas/Training'
+        - type: object
+          properties:
+            trainername:
+              type: string
+              example: Petr.Petroff
+    TraineeTrainingsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TraineeTrainingsListItem'
+    TrainerTrainingsListItem:
+      allOf:
+        - $ref: '#/components/schemas/Training'
+        - type: object
+          properties:
+            traineename:
+              type: string
+              example: Ivan.Ivanoff
+    TrainerTrainingsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TrainerTrainingsListItem'
+    TrainerItem:
+      allOf:
+        - type: object
+          properties:
+            username:
+              type: string
+              example: Ivan.Ivanoff
+        - $ref: '#/components/schemas/TrainerProfile'
+    TrainerList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TrainerItem'
+    TraineeItem:
+      allOf:
+        - type: object
+          properties:
+            username:
+              type: string
+              example: Ivan.Ivanoff
+        - $ref: '#/components/schemas/User'
+    TraineeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TraineeItem'
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Operation successful
+    Error:
+      properties:
+        code:
+          type: integer
+          description: error code
+          example: 67800
+        message:
+          type: string
+          description: error message
+          example: Error occured
+      required:
+        - code
+        - message
+    TrainingType:
+      type: string
+      enum:
+        - fitness
+        - yoga
+        - Zumba
+        - stretching
+        - resistance
+      description: Types of trainings and types of trainer's specialization
+      example: Zumba
+  parameters:
+    UsernamePathParam:
+      name: username
+      in: path
+      required: true
+      schema:
+        type: string
+      example: Ivan.Ivanoff
+    TraineeNameParam:
+      name: traineename
+      in: query
+      required: false
+      schema:
+        type: string
+      example: Petr.Petroff
+    TrainerNameParam:
+      name: trainername
+      in: query
+      required: false
+      schema:
+        type: string
+      example: Semen.Semenoff
+    PeriodFromParam:
+      name: periodFrom
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+      example: 2024-10-02
+    PeriodToParam:
+      name: periodTo
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+      example: 2024-10-05
+    TrainingTypeParam:
+      name: trainingType
+      in: query
+      description: Training type name parameter
+      required: false
+      schema:
+        $ref: "#/components/schemas/TrainingType"

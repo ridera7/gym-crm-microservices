@@ -1,0 +1,74 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 insert rows in table trainee",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "insert": {
+              "tableName": "trainee",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "valueNumeric": 1
+                  }
+                },
+                {
+                  "column": {
+                    "name": "date_of_birth",
+                    "valueDate": "2000-11-06"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "address",
+                    "value": "Kyiv city"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "valueNumeric": 1
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "trainee",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "valueNumeric": 2
+                  }
+                },
+                {
+                  "column": {
+                    "name": "date_of_birth",
+                    "valueDate": "2003-03-10"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "address",
+                    "value": "Brovary city"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "valueNumeric": 2
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

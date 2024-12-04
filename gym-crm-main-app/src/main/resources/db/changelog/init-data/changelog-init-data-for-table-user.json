@@ -1,0 +1,160 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 insert rows in table user",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "insert": {
+              "tableName": "user",
+              "columns": [
+                {
+                  "column": {
+                    "name": "first_name",
+                    "value": "Ivan"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "last_name",
+                    "value": "Ivanoff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "username",
+                    "value": "Ivan.Ivanoff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "password",
+                    "value": "ebea09562570d10cccb58137cc211c18:eb08d4de685ff2bfe7f68be49ef8993f2af94c62a039dabdef5fafb607563499"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "is_active",
+                    "valueBoolean": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "user",
+              "columns": [
+                {
+                  "column": {
+                    "name": "first_name",
+                    "value": "Petr"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "last_name",
+                    "value": "Petroff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "username",
+                    "value": "Petr.Petroff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "password",
+                    "value": "409dde416129e069c659e3b4f47d8d7c:f325de300bf8a5f63a33a4fb1be72ff4dc38910a7b9fad0123a92b02737a7705"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "is_active",
+                    "valueBoolean": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "user",
+              "columns": [
+                {
+                  "column": {
+                    "name": "first_name",
+                    "value": "Semen"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "last_name",
+                    "value": "Semenoff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "username",
+                    "value": "Semen.Semenoff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "password",
+                    "value": "4eb9188f0663d35b83c10944f6dd0c9c:fa71a78b9b075713230d1fcd6fc9d10a6f69735fdddfd7a1213a3c2ada90f8ee"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "is_active",
+                    "valueBoolean": true
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "user",
+              "columns": [
+                {
+                  "column": {
+                    "name": "first_name",
+                    "value": "Vasiliy"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "last_name",
+                    "value": "Vasilieff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "username",
+                    "value": "Vasiliy.Vasilieff"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "password",
+                    "value": "82ce40e8a990d3b8089546e8949f28b5:f3c25a8c9b95ac6e3ed6d36b9515022948a9f06738746a5f46b70fa262d2be49"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "is_active",
+                    "valueBoolean": true
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
