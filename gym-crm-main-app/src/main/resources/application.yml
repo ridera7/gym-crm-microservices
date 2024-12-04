@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: gym-crm-application
+  profiles:
+    active: local
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.json
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        show-sql: true
+        format_sql: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /api/v1/swagger-ui.html
+    operationsSorter: method
+    display-request-duration: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+logging:
+  level:
+    root: WARN
+  file:
+    name: logs/spring-boot-application.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %X{transactionId} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %X{transactionId} - %msg%n"
+
+security:
+  password:
+    length: 10
+
+application:
+  server:
+    url: http://localhost:8080

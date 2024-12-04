@@ -1,0 +1,98 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 insert rows in table training",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "insert": {
+              "tableName": "training",
+              "columns": [
+                {
+                  "column": {
+                    "name": "trainee_id",
+                    "valueNumeric": 1
+                  }
+                },
+                {
+                  "column": {
+                    "name": "trainer_id",
+                    "valueNumeric": 3
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_name",
+                    "value": "Morning motion"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_type_id",
+                    "valueNumeric": 1
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_date",
+                    "valueDate": "2024-09-13"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_duration",
+                    "valueNumeric": 45
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "training",
+              "columns": [
+                {
+                  "column": {
+                    "name": "trainee_id",
+                    "valueNumeric": 2
+                  }
+                },
+                {
+                  "column": {
+                    "name": "trainer_id",
+                    "valueNumeric": 4
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_name",
+                    "value": "Evening motion"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_type_id",
+                    "valueNumeric": 2
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_date",
+                    "valueDate": "2024-09-15"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "training_duration",
+                    "valueNumeric": 90
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

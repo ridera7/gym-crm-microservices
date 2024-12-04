@@ -1,0 +1,62 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 add table trainee",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "trainee",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint",
+                    "constraints": {
+                      "primaryKey": true,
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "date_of_birth",
+                    "type": "date"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "address",
+                    "type": "VARCHAR(150)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint",
+                    "constraints": {
+                      "unique": true,
+                      "nullable": false
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseTableName": "trainee",
+              "baseColumnNames": "user_id",
+              "constraintName": "fk_trainee_user",
+              "referencedTableName": "user",
+              "referencedColumnNames": "id",
+              "onDelete": "CASCADE",
+              "onUpdate": "CASCADE"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

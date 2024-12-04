@@ -1,0 +1,77 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "GCA-1 insert rows in table training_type",
+        "author": "Alexander B.",
+        "changes": [
+          {
+            "insert": {
+              "tableName": "training_type",
+              "columns": [
+                {
+                  "column": {
+                    "name": "training_type_name",
+                    "value": "fitness"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "training_type",
+              "columns": [
+                {
+                  "column": {
+                    "name": "training_type_name",
+                    "value": "yoga"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "training_type",
+              "columns": [
+                {
+                  "column": {
+                    "name": "training_type_name",
+                    "value": "Zumba"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "training_type",
+              "columns": [
+                {
+                  "column": {
+                    "name": "training_type_name",
+                    "value": "stretching"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "insert": {
+              "tableName": "training_type",
+              "columns": [
+                {
+                  "column": {
+                    "name": "training_type_name",
+                    "value": "resistance"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

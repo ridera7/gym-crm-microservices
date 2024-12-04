@@ -1,0 +1,29 @@
+{
+  "databaseChangeLog": [
+    {
+      "include": {
+        "file": "db/changelog/init-data/changelog-init-data-for-table-user.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-data/changelog-init-data-for-table-training-type.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-data/changelog-init-data-for-table-trainee.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-data/changelog-init-data-for-table-trainer.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/changelog/init-data/changelog-init-data-for-table-training.json"
+      }
+    }
+  ]
+}
