@@ -15,8 +15,8 @@ logging:
     root: WARN
     com:
       netflix:
-        eureka: ON
-        discovery: ON
+        eureka: INFO
+        discovery: INFO
   file:
     name: logs/spring-boot-application.log
   pattern:
