@@ -21,3 +21,9 @@ logging:
   level:
     org:
       hibernate: INFO
+    root: WARN
+  file:
+    name: logs/spring-boot-application.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %X{transactionId} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %X{transactionId} - %msg%n"
