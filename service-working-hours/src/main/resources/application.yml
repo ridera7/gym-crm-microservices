@@ -15,9 +15,22 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8081
+  port: 0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: false
 
 logging:
   level:
     org:
       hibernate: INFO
+    root: WARN
+  file:
+    name: logs/spring-boot-application.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %X{transactionId} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %X{transactionId} - %msg%n"
