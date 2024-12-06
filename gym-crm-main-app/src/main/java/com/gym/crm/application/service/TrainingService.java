@@ -1,14 +1,12 @@
 package com.gym.crm.application.service;
 
+import com.gym.crm.application.dto.client.TrainerWorkloadRequest;
 import com.gym.crm.application.dto.criteria.TrainingsListCriteria;
-import com.gym.crm.application.dto.request.TrainingAddRequest;
 import com.gym.crm.application.entity.Training;
 
 import java.util.List;
 
 public interface TrainingService {
-
-    void createTraining(TrainingAddRequest addRequest);
 
     Training save(Training training);
 
@@ -18,4 +16,5 @@ public interface TrainingService {
 
     List<Training> findByCriteria(TrainingsListCriteria criteriaList);
 
+    void notifyWorkingHoursService(Training training, TrainerWorkloadRequest.ActionTypeEnum action);
 }

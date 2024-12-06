@@ -1,15 +1,17 @@
 package com.gym.crm.application.service.facade;
 
 import com.gym.crm.application.dto.authentication.AuthenticationInfo;
+import com.gym.crm.application.dto.client.TrainerWorkloadRequest;
 import com.gym.crm.application.dto.request.TraineeTrainingsListRequest;
 import com.gym.crm.application.dto.request.TrainerTrainingsListRequest;
-import com.gym.crm.application.dto.request.TrainingAddRequest;
 import com.gym.crm.application.entity.Trainee;
 import com.gym.crm.application.entity.Trainer;
 import com.gym.crm.application.entity.Training;
+import com.gym.crm.application.entity.TrainingType;
 import com.gym.crm.application.entity.User;
 import com.gym.crm.application.exception.AuthenticationException;
 import com.gym.crm.application.exception.NotFoundException;
+import com.gym.crm.application.exception.ValidationException;
 import com.gym.crm.application.mapper.TraineeMapper;
 import com.gym.crm.application.mapper.TrainerMapper;
 import com.gym.crm.application.mapper.TrainingTypeMapper;
@@ -45,6 +47,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.gym.crm.application.constant.Message.NO_USER_WITH_SUCH_USERNAME;
+import static java.lang.String.format;
 
 @Slf4j
 @Service
@@ -145,20 +150,36 @@ public class ServiceFacadeImpl implements ServiceFacade {
 
     @Override
     public void createTraining(AddTrainingRequest addRequest) {
-        TrainingAddRequest trainingAddRequest = new TrainingAddRequest(
-                addRequest.getTraineeUsername(),
-                addRequest.getTrainerUsername(),
-                addRequest.getTrainingName(),
-                addRequest.getTrainingDate(),
-                addRequest.getTrainingDuration()
-        );
+        Trainee trainee = Optional.ofNullable(traineeService.findByUsername(addRequest.getTraineeUsername()))
+                .orElseThrow(() -> new ValidationException(
+                        format(NO_USER_WITH_SUCH_USERNAME, "trainee", addRequest.getTraineeUsername()))
+                );
+        Trainer trainer = Optional.ofNullable(trainerService.findByUsername(addRequest.getTrainerUsername()))
+                .orElseThrow(() -> new ValidationException(
+                        format(NO_USER_WITH_SUCH_USERNAME, "trainer", addRequest.getTrainerUsername()))
+                );
+        TrainingType trainingType = trainer.getSpecialization();
 
-        trainingService.createTraining(trainingAddRequest);
+        Training training = Training.builder()
+                .trainee(trainee)
+                .trainer(trainer)
+                .trainingDate(addRequest.getTrainingDate())
+                .trainingName(addRequest.getTrainingName())
+                .trainingType(trainingType)
+                .trainingDuration(addRequest.getTrainingDuration())
+                .build();
+
+        trainingService.save(training);
     }
 
     @Override
     public Training findTraining(long id, AuthenticationInfo authenticationInfo) {
         return trainingService.findById(id);
+    }
+
+    @Override
+    public void notifyWorkingHoursService(Training training, TrainerWorkloadRequest.ActionTypeEnum action) {
+        trainingService.notifyWorkingHoursService(training, action);
     }
 
     @Override
@@ -228,8 +249,6 @@ public class ServiceFacadeImpl implements ServiceFacade {
         User user = findUser(request.getUsername());
 
         userService.changePassword(user, request.getNewPassword());
-
-        // TODO Logout
     }
 
     @Override

@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -63,5 +64,11 @@ public class Trainee implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "trainer_id")}
     )
     Set<Trainer> trainers = new HashSet<>();
+
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "trainee", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<Training> trainings = new HashSet<>();
 
 }

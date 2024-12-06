@@ -1,6 +1,7 @@
 package com.gym.crm.application.service.facade;
 
 import com.gym.crm.application.dto.authentication.AuthenticationInfo;
+import com.gym.crm.application.dto.client.TrainerWorkloadRequest;
 import com.gym.crm.application.dto.request.TraineeTrainingsListRequest;
 import com.gym.crm.application.dto.request.TrainerTrainingsListRequest;
 import com.gym.crm.application.entity.Trainee;
@@ -56,6 +57,8 @@ public interface ServiceFacade {
     void createTraining(AddTrainingRequest addRequest);
 
     Training findTraining(long id, AuthenticationInfo authenticationInfo);
+
+    void notifyWorkingHoursService(Training training, TrainerWorkloadRequest.ActionTypeEnum action);
 
     List<TraineeTrainingsListItem> getTraineeTrainingsList(TraineeTrainingsListRequest trainingsListRequest);
 

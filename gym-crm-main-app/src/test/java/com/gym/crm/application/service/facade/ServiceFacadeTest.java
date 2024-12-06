@@ -3,7 +3,6 @@ package com.gym.crm.application.service.facade;
 import com.gym.crm.application.dto.authentication.AuthenticationInfo;
 import com.gym.crm.application.dto.request.TraineeTrainingsListRequest;
 import com.gym.crm.application.dto.request.TrainerTrainingsListRequest;
-import com.gym.crm.application.dto.request.TrainingAddRequest;
 import com.gym.crm.application.entity.Trainee;
 import com.gym.crm.application.entity.Trainer;
 import com.gym.crm.application.entity.Training;
@@ -142,9 +141,13 @@ class ServiceFacadeTest {
         addRequest.setTrainingName("Yoga Session");
         addRequest.setTrainingDuration(60);
 
+        when(traineeService.findByUsername(any())).thenReturn(TRAINEE);
+        when(trainerService.findByUsername(any())).thenReturn(TRAINER);
+
+
         serviceFacade.createTraining(addRequest);
 
-        verify(trainingService).createTraining(any(TrainingAddRequest.class));
+        verify(trainingService).save(any(Training.class));
     }
 
     @Test
