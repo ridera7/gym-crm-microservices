@@ -8,6 +8,7 @@ import com.gym.crm.application.exception.NotFoundException;
 import com.gym.crm.application.repository.TraineeRepository;
 import com.gym.crm.application.service.TraineeService;
 import com.gym.crm.application.service.TrainerService;
+import com.gym.crm.application.service.TrainingService;
 import com.gym.crm.application.service.UserService;
 import com.gym.crm.application.service.impl.serviceutils.PasswordHandler;
 import com.gym.crm.application.service.impl.validation.EntityValidator;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.gym.crm.application.dto.client.TrainerWorkloadRequest.ActionTypeEnum.DELETE;
 import static java.lang.String.format;
 
 @Slf4j
@@ -31,6 +33,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository repository;
     private final UserService userService;
     private final TrainerService trainerService;
+    private final TrainingService trainingService;
     private final EntityValidator validator;
     private final PasswordHandler passwordHandler;
 
@@ -110,7 +113,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         Set<Trainer> trainers = new HashSet<>();
 
-        for (String trainerUsername: trainersUsernamesList) {
+        for (String trainerUsername : trainersUsernamesList) {
             trainers.add(trainerService.findByUsername(trainerUsername));
         }
 
@@ -130,6 +133,9 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public void delete(Trainee trainee) {
         validator.validateEntityId(trainee.getId());
+
+        trainee.getTrainings()
+                .forEach(training -> trainingService.notifyWorkingHoursService(training, DELETE));
 
         repository.deleteById(trainee.getId());
     }
