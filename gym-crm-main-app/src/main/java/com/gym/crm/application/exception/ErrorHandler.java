@@ -22,6 +22,7 @@ import static com.gym.crm.application.exception.ErrorCodeMapping.DEFAULT_CODE;
 import static com.gym.crm.application.exception.ErrorCodeMapping.ENTITY_NOT_FOUND_ERROR_CODE;
 import static com.gym.crm.application.exception.ErrorCodeMapping.GLOBAL_ERROR_CODE;
 import static com.gym.crm.application.exception.ErrorCodeMapping.PERSISTENCE_ERROR_CODE;
+import static com.gym.crm.application.exception.ErrorCodeMapping.SERVICE_UNAVAILABLE_ERROR_CODE;
 import static com.gym.crm.application.exception.ErrorCodeMapping.UNAUTHORIZED_ERROR_CODE;
 import static com.gym.crm.application.exception.ErrorCodeMapping.VALIDATION_ERROR_CODE;
 import static java.lang.String.format;
@@ -50,6 +51,14 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Error> handleUnauthorizedError(UnauthorizedException exception) {
         logError(exception);
         Error error = buildErrorResponse(UNAUTHORIZED_ERROR_CODE, exception.getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = ServiceUnavailableException.class)
+    protected ResponseEntity<Error> handleServiceUnavailableError(ServiceUnavailableException exception) {
+        logError(exception);
+        Error error = buildErrorResponse(SERVICE_UNAVAILABLE_ERROR_CODE, exception.getMessage());
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
@@ -120,6 +129,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
             case UNAUTHORIZED_ERROR_CODE -> "User is not authorized for requested operation";
             case PERSISTENCE_ERROR_CODE -> "Error detected during persistence";
             case ENTITY_NOT_FOUND_ERROR_CODE -> "NotFoundError: Entity not found";
+            case SERVICE_UNAVAILABLE_ERROR_CODE -> "Service unavailable";
             default -> "Internal Error";
         };
     }
