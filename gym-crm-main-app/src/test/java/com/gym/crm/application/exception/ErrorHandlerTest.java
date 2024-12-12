@@ -71,4 +71,14 @@ class ErrorHandlerTest {
         assertEquals("NotFoundError: Entity not found: Entity not found", response.getBody().getMessage());
     }
 
+    @Test
+    void shouldHandleServiceUnavailableError() {
+        ServiceUnavailableException exception = new ServiceUnavailableException("Service unavailable");
+
+        ResponseEntity<Error> response = errorHandler.handleServiceUnavailableError(exception);
+
+        assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
+        assertEquals("Service unavailable: Service unavailable", response.getBody().getMessage());
+    }
+
 }

@@ -60,7 +60,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         logError(exception);
         Error error = buildErrorResponse(SERVICE_UNAVAILABLE_ERROR_CODE, exception.getMessage());
 
-        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(value = ValidationException.class)
