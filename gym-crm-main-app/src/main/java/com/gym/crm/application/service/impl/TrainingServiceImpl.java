@@ -4,6 +4,7 @@ import com.gym.crm.application.dto.client.TrainerWorkloadRequest;
 import com.gym.crm.application.dto.criteria.TrainingsListCriteria;
 import com.gym.crm.application.entity.Trainer;
 import com.gym.crm.application.entity.Training;
+import com.gym.crm.application.exception.ServiceUnavailableException;
 import com.gym.crm.application.feign.client.WorkingHoursClient;
 import com.gym.crm.application.repository.TrainingRepository;
 import com.gym.crm.application.repository.specification.TrainingSpecifications;
@@ -11,6 +12,7 @@ import com.gym.crm.application.service.TrainingService;
 import com.gym.crm.application.service.impl.validation.EntityValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +78,13 @@ public class TrainingServiceImpl implements TrainingService {
                 .actionType(action)
                 .build();
 
-        workingHoursClient.modifyTrainerWorkload(request);
+        ResponseEntity<?> response = workingHoursClient.modifyTrainerWorkload(request);
+
+        if (response.getStatusCode().is5xxServerError()) {
+            log.error("Error executing modifyTrainerWorkload");
+
+            throw new ServiceUnavailableException("Service Working Hours (service-working-hours) unavailable");
+        }
+
     }
 }
