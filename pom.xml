@@ -21,7 +21,6 @@
 
     <modules>
         <module>gym-crm-main-app</module>
-        <module>service-a</module>
         <module>service-working-hours</module>
     </modules>
 

@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: gym-crm-main-app-route
+          uri: lb://GYM-CRM-MAIN-APP
+          predicates:
+            - Path=/gym-crm-main-app/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: gymCrmMainAppCircuitBreaker
+                fallbackUri: forward:/fallback/gym-crm-main-app
+        - id: service-working-hours-route
+          uri: lb://SERVICE-WORKING-HOURS
+          predicates:
+            - Path=/service-working-hours/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: serviceWorkingHoursCircuitBreaker
+                fallbackUri: forward:/fallback/service-working-hours
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
