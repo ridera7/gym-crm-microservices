@@ -1,13 +1,10 @@
 package com.gym.crm.application.security;
 
-import com.gym.crm.application.service.impl.CustomUserDetailsService;
 import com.gym.crm.application.service.impl.serviceutils.PasswordHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,23 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
     private final PasswordHandler passwordHandler;
-    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Value("${application.server.url}")
     private String baseUrl;
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder
-                .authenticationProvider(customAuthenticationProvider)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-        return authenticationManagerBuilder.build();
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
