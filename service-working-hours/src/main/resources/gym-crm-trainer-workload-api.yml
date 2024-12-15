@@ -27,6 +27,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TrainerWorkloadResponse'
+        '400':
+          description: Bad Request - The provided parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       summary: Get trainer monthly training summary
       description: Retrieve the total training duration for the specified trainer, year, and month.

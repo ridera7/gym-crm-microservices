@@ -10,17 +10,23 @@ import com.gym.crm.application.entity.TrainingType;
 import com.gym.crm.application.entity.User;
 import com.gym.crm.application.exception.AuthenticationException;
 import com.gym.crm.application.mapper.TraineeMapper;
+import com.gym.crm.application.mapper.TrainerMapper;
+import com.gym.crm.application.rest.dto.ActivateDeactivateRequest;
 import com.gym.crm.application.rest.dto.AddTrainingRequest;
 import com.gym.crm.application.rest.dto.LoginChangeRequest;
 import com.gym.crm.application.rest.dto.LoginCredentials;
+import com.gym.crm.application.rest.dto.TraineeProfile;
 import com.gym.crm.application.rest.dto.TraineeProfileResponse;
 import com.gym.crm.application.rest.dto.TraineeTrainerListUpdateRequestInner;
 import com.gym.crm.application.rest.dto.TraineeTrainingsListItem;
 import com.gym.crm.application.rest.dto.TraineeUpdateProfileRequest;
 import com.gym.crm.application.rest.dto.TrainerItem;
+import com.gym.crm.application.rest.dto.TrainerProfile;
 import com.gym.crm.application.rest.dto.TrainerTrainingsListItem;
+import com.gym.crm.application.rest.dto.TrainerUpdateProfileRequest;
 import com.gym.crm.application.rest.dto.TrainingTypeListResponseInner;
 import com.gym.crm.application.rest.dto.UpdateTraineeProfile200Response;
+import com.gym.crm.application.rest.dto.UpdateTrainerProfile200Response;
 import com.gym.crm.application.service.TraineeService;
 import com.gym.crm.application.service.TrainerService;
 import com.gym.crm.application.service.TrainingService;
@@ -39,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.gym.crm.application.rest.dto.TrainingType.FITNESS;
 import static com.gym.crm.application.testdata.EntityTestData.TRAINEE;
 import static com.gym.crm.application.testdata.EntityTestData.TRAINER;
 import static com.gym.crm.application.testdata.EntityTestData.TRAINING;
@@ -76,6 +83,25 @@ class ServiceFacadeTest {
     private ServiceFacadeImpl serviceFacade;
 
     @Test
+    void shouldCreateTrainee() {
+        TraineeProfile registrationRequest = new TraineeProfile()
+                .firstName(TRAINEE.getUser().getFirstName())
+                .lastName(TRAINEE.getUser().getLastName())
+                .address(TRAINEE.getAddress())
+                .dateOfBirth(TRAINEE.getDateOfBirth());
+        AuthenticationInfo authenticationInfo = new AuthenticationInfo(TRAINEE.getUser().getUsername(), "password123");
+
+        when(traineeService.createTrainee(any())).thenReturn(authenticationInfo);
+
+        LoginCredentials actual = serviceFacade.createTrainee(registrationRequest);
+
+        assertEquals(TRAINEE.getUser().getUsername(), actual.getUsername());
+        assertEquals("password123", actual.getPassword());
+
+        verify(traineeService).createTrainee(any());
+    }
+
+    @Test
     @DisplayName("Should select trainee")
     void shouldSelectTrainee() {
         AuthenticationInfo auth = new AuthenticationInfo("username", "password");
@@ -99,6 +125,23 @@ class ServiceFacadeTest {
         verify(traineeService).findByUsername(username);
     }
 
+    @Test
+    void shouldCreateTrainer() {
+        TrainerProfile registrationRequest = new TrainerProfile()
+                .firstName(TRAINER.getUser().getFirstName())
+                .lastName(TRAINER.getUser().getLastName())
+                .specialization(FITNESS);
+        AuthenticationInfo authenticationInfo = new AuthenticationInfo(TRAINER.getUser().getUsername(), "password123");
+
+        when(trainerService.createTrainer(any())).thenReturn(authenticationInfo);
+
+        LoginCredentials actual = serviceFacade.createTrainer(registrationRequest);
+
+        assertEquals(TRAINER.getUser().getUsername(), actual.getUsername());
+        assertEquals("password123", actual.getPassword());
+
+        verify(trainerService).createTrainer(any());
+    }
     @Test
     void shouldFindTrainerByAuthenticationInfo() {
         when(trainerService.findByUsername(TRAINER.getUser().getUsername())).thenReturn(TRAINER);
@@ -378,6 +421,35 @@ class ServiceFacadeTest {
 
         assertEquals(expectedResponse, actualResponse);
         verify(traineeService).updateTraineeProfile(username, traineeRequest);
+    }
+
+    @Test
+    void shouldReturnUpdatedTrainerProfileResponseWhenValidRequest() {
+        String username = "testUser";
+        TrainerUpdateProfileRequest profileRequest = new TrainerUpdateProfileRequest()
+                .firstName(TRAINEE.getUser().getFirstName())
+                .lastName(TRAINEE.getUser().getLastName())
+                .specialization(FITNESS);
+        Trainer trainerRequest = TrainerMapper.INSTANCE.fromTrainerUpdateProfileRequest(profileRequest);
+        Trainer updatedTrainer = TRAINER;
+        UpdateTrainerProfile200Response expectedResponse = TrainerMapper.INSTANCE.toUpdateTrainerProfile200Response(updatedTrainer);
+
+        when(trainerService.updateTrainerProfile(username, trainerRequest)).thenReturn(updatedTrainer);
+
+        UpdateTrainerProfile200Response actualResponse = serviceFacade.updateTrainerProfile(username, profileRequest);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(trainerService).updateTrainerProfile(username, trainerRequest);
+    }
+
+    @Test
+    void shouldActivateUser() {
+        ActivateDeactivateRequest isActive = new ActivateDeactivateRequest(true);
+        String username = "Ivan.Ivanoff";
+
+        serviceFacade.activateUser(username, isActive);
+
+        verify(userService).activateUser(username, isActive.getIsActive());
     }
 
 }

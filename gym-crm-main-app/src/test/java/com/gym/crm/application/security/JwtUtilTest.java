@@ -1,6 +1,5 @@
 package com.gym.crm.application.security;
 
-
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

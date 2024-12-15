@@ -1,6 +1,7 @@
 package com.gym.crm.application.feign.client;
 
 import com.gym.crm.application.dto.client.TrainerWorkloadRequest;
+import com.gym.crm.application.feign.config.FeignConfig;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "service-working-hours", path = "/api/v1")
+@FeignClient(
+        name = "service-working-hours",
+        path = "/api/v1",
+        configuration = FeignConfig.class
+)
 public interface WorkingHoursClient {
 
     @PostMapping("/trainer/summary")

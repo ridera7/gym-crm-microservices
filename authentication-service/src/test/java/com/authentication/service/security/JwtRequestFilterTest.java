@@ -1,7 +1,5 @@
-package com.gym.crm.application.security;
+package com.authentication.service.security;
 
-import com.gym.crm.application.service.impl.CustomUserDetailsService;
-import com.gym.crm.application.service.impl.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

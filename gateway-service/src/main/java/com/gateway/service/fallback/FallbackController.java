@@ -26,4 +26,10 @@ public class FallbackController {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(format(SERVICE_UNAVAILABLE_TEMPLATE, "Service Working Hours"));
     }
+
+    @GetMapping("/authentication-service")
+    public ResponseEntity<?> fallbackAuthenticationService() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(format(SERVICE_UNAVAILABLE_TEMPLATE, "Authentication Service"));
+    }
 }

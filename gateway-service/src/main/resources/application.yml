@@ -7,11 +7,24 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: authentication-service-route
+          uri: lb://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/auth/**
+          filters:
+            - AddRequestHeader=X-Request-X, Gateway
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: authenticationServiceCircuitBreaker
+                fallbackUri: forward:/fallback/authentication-service
         - id: gym-crm-main-app-route
           uri: lb://GYM-CRM-MAIN-APP
           predicates:
             - Path=/gym-crm-main-app/**
           filters:
+            - AuthenticationFilter
+            - AddRequestHeader=X-Request-X, Gateway
             - StripPrefix=1
             - name: CircuitBreaker
               args:
@@ -22,6 +35,8 @@ spring:
           predicates:
             - Path=/service-working-hours/**
           filters:
+            - AuthenticationFilter
+            - AddRequestHeader=X-Request-X, Gateway
             - StripPrefix=1
             - name: CircuitBreaker
               args:
@@ -34,3 +49,12 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: logs/gateway-service.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %X{transactionId} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %X{transactionId} - %msg%n"

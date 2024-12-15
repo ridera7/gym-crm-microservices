@@ -11,7 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,7 +46,7 @@ class CustomAuthenticationProviderTest {
 
         Authentication result = customAuthenticationProvider.authenticate(authentication);
 
-        assert(result instanceof UsernamePasswordAuthenticationToken);
+        assertInstanceOf(UsernamePasswordAuthenticationToken.class, result);
         verify(bruteforceProtector).loginSucceeded(username);
     }
 
@@ -87,8 +90,8 @@ class CustomAuthenticationProviderTest {
 
     @Test
     public void testSupports() {
-        assert(customAuthenticationProvider.supports(UsernamePasswordAuthenticationToken.class));
-        assert(!customAuthenticationProvider.supports(Object.class));
+        assertTrue(customAuthenticationProvider.supports(UsernamePasswordAuthenticationToken.class));
+        assertFalse(customAuthenticationProvider.supports(Object.class));
     }
 
 }
