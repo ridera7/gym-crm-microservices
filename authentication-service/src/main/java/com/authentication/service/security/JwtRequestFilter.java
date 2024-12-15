@@ -1,7 +1,5 @@
-package com.gym.crm.application.security;
+package com.authentication.service.security;
 
-import com.gym.crm.application.service.impl.CustomUserDetailsService;
-import com.gym.crm.application.service.impl.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,10 +31,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader(AUTHORIZATION);
-
         String username = null;
         String jwt = null;
+        final String authorizationHeader = request.getHeader(AUTHORIZATION);
 
         if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
             jwt = authorizationHeader.substring(BEARER_PREFIX.length());
@@ -61,3 +58,4 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

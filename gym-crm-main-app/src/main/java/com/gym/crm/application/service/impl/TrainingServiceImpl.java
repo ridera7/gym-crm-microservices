@@ -85,6 +85,6 @@ public class TrainingServiceImpl implements TrainingService {
 
             throw new ServiceUnavailableException("Service Working Hours (service-working-hours) unavailable");
         }
-
     }
+
 }
