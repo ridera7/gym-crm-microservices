@@ -1,4 +1,4 @@
-package com.gym.crm.application.security;
+package com.authentication.service.security;
 
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;

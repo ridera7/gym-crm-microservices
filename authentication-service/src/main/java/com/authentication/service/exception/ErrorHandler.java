@@ -35,7 +35,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     protected ResponseEntity<ErrorResponse> handleGlobalError(RuntimeException exception) {
         logError(exception);
-        ErrorResponse error = buildErrorResponse(GLOBAL_ERROR_CODE, exception.getMessage());
+        ErrorResponse error = buildErrorResponse(GLOBAL_ERROR_CODE, "auth:"+exception.getMessage());
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -57,7 +57,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = TokenException.class)
-    protected ResponseEntity<ErrorResponse> handleUnauthorizedError(TokenException exception) {
+    protected ResponseEntity<ErrorResponse> handleTokenError(TokenException exception) {
         logError(exception);
         ErrorResponse error = buildErrorResponse(TOKEN_INVALID_ERROR_CODE, exception.getMessage());
 

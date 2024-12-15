@@ -23,8 +23,8 @@ public class AuthenticationFilter implements GatewayFilterFactory<Authentication
     private static final List<String> EXCLUDED_URLS = List.of(
             "/auth/api/v1/login",
             "/auth/api/v1/validate-token",
-            "/gymcrm/api/v1/trainee/register",
-            "/gymcrm/api/v1/trainer/register"
+            "/gym-crm-main-app/api/v1/trainee/register",
+            "/gym-crm-main-app/api/v1/trainer/register"
             );
     private final WebClient.Builder webClientBuilder;
 

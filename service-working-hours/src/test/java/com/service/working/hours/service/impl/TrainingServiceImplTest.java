@@ -2,6 +2,7 @@ package com.service.working.hours.service.impl;
 
 import com.service.working.hours.entity.Trainer;
 import com.service.working.hours.entity.TrainingRecord;
+import com.service.working.hours.exception.ValidationException;
 import com.service.working.hours.repository.TrainerRepository;
 import com.service.working.hours.repository.TrainingRecordRepository;
 import com.service.working.hours.rest.dto.TrainerWorkloadRequest;
@@ -18,7 +19,9 @@ import java.util.Optional;
 import static com.service.working.hours.rest.dto.TrainerWorkloadRequest.ActionTypeEnum.ADD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -115,6 +118,15 @@ class TrainingServiceImplTest {
 
         verify(trainerRepository).save(any(Trainer.class));
         verify(trainingRecordRepository).save(any(TrainingRecord.class));
+    }
+
+    @Test
+    void shouldThrowValidationExceptionIfInvalidMonth() {
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> trainingService.getMonthlyTrainingHours("trainer1", 2024, 13));
+
+        assertEquals("Invalid parameters: month must be between 1 and 12", exception.getMessage());
+        verify(trainingRecordRepository, never()).findTotalDurationByTrainerAndYearAndMonth(any(), any(), any());
     }
 
 }

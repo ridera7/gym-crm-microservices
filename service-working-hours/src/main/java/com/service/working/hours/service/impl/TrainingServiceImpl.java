@@ -28,6 +28,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         TrainingRecord trainingRecord = trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month)
                 .orElseGet(() -> createTrainingRecord(workloadRequest));
+
         updateWorkload(workloadRequest, trainingRecord, duration);
     }
 

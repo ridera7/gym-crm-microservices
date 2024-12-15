@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
-import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -32,16 +31,6 @@ public class SecurityConfig {
 
     @Value("${application.server.url}")
     private String baseUrl;
-
-    private static final Set<String> EXCLUDE_URLS = Set.of(
-            "/api/v1/login",
-            "/api/v1/trainee/register",
-            "/api/v1/trainer/register",
-            "/api/v1/swagger-ui",
-            "/api-docs",
-            "/actuator",
-            "/favicon.ico"
-    );
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -60,7 +49,7 @@ public class SecurityConfig {
                 .cors(customizer -> customizer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll() //authenticated()
+                        .anyRequest().permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll);
 

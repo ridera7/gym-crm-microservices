@@ -7,11 +7,23 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: authentication-service-route
+          uri: lb://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/auth/**
+          filters:
+            - AddRequestHeader=X-Request-X, Gateway
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: authenticationServiceCircuitBreaker
+                fallbackUri: forward:/fallback/authentication-service
         - id: gym-crm-main-app-route
           uri: lb://GYM-CRM-MAIN-APP
           predicates:
             - Path=/gym-crm-main-app/**
           filters:
+            - AddRequestHeader=X-Request-X, Gateway
             - StripPrefix=1
             - name: CircuitBreaker
               args:
@@ -22,6 +34,7 @@ spring:
           predicates:
             - Path=/service-working-hours/**
           filters:
+            - AddRequestHeader=X-Request-X, Gateway
             - StripPrefix=1
             - name: CircuitBreaker
               args:
