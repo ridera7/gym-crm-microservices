@@ -5,14 +5,13 @@ import com.gym.crm.application.dto.criteria.TrainingsListCriteria;
 import com.gym.crm.application.entity.Trainer;
 import com.gym.crm.application.entity.Training;
 import com.gym.crm.application.exception.ServiceUnavailableException;
-import com.gym.crm.application.feign.client.WorkingHoursClient;
 import com.gym.crm.application.repository.TrainingRepository;
 import com.gym.crm.application.repository.specification.TrainingSpecifications;
 import com.gym.crm.application.service.TrainingService;
 import com.gym.crm.application.service.impl.validation.EntityValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +26,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingRepository repository;
     private final EntityValidator validator;
-    private final WorkingHoursClient workingHoursClient;
+    private final JmsTemplate jmsTemplate;
 
     @Override
     @Transactional
@@ -78,12 +77,12 @@ public class TrainingServiceImpl implements TrainingService {
                 .actionType(action)
                 .build();
 
-        ResponseEntity<?> response = workingHoursClient.modifyTrainerWorkload(request);
-
-        if (response.getStatusCode().is5xxServerError()) {
-            log.error("Error executing modifyTrainerWorkload");
-
-            throw new ServiceUnavailableException("Service Working Hours (service-working-hours) unavailable");
+        try {
+            jmsTemplate.convertAndSend("working.hours.queue", request);
+            log.info("Message sent to working.hours.queue: {}", request);
+        } catch (Exception e) {
+            log.error("Failed to send message to working.hours.queue", e);
+            throw new ServiceUnavailableException("Unable to notify Working Hours Service");
         }
     }
 

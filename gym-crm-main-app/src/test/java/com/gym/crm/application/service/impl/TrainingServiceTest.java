@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +30,7 @@ import static com.gym.crm.application.testdata.EntityTestData.TRANSIENT_TRAINING
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -46,6 +48,9 @@ class TrainingServiceTest {
     @Mock
     private WorkingHoursClient workingHoursClient;
 
+    @Mock
+    private JmsTemplate jmsTemplate;
+
     @InjectMocks
     private TrainingServiceImpl trainingService;
 
@@ -59,7 +64,6 @@ class TrainingServiceTest {
         trainingService.save(TRANSIENT_TRAINING);
 
         verify(trainingRepository).save(TRANSIENT_TRAINING);
-        verify(workingHoursClient).modifyTrainerWorkload(any());
     }
 
     @Test
@@ -105,13 +109,11 @@ class TrainingServiceTest {
     void shouldNotifyWorkingHoursServiceWithCorrectRequest() {
         Training training = createMockTraining();
         TrainerWorkloadRequest.ActionTypeEnum action = TrainerWorkloadRequest.ActionTypeEnum.ADD;
-        when(workingHoursClient.modifyTrainerWorkload(any(TrainerWorkloadRequest.class)))
-                .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
         trainingService.notifyWorkingHoursService(training, action);
 
         ArgumentCaptor<TrainerWorkloadRequest> captor = ArgumentCaptor.forClass(TrainerWorkloadRequest.class);
-        verify(workingHoursClient).modifyTrainerWorkload(captor.capture());
+        verify(jmsTemplate).convertAndSend(eq("working.hours.queue"), captor.capture());
         TrainerWorkloadRequest capturedRequest = captor.getValue();
 
         assertEquals(training.getTrainer().getUser().getUsername(), capturedRequest.getUsername());
