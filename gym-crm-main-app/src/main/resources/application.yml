@@ -17,6 +17,10 @@ spring:
       hibernate:
         show-sql: true
         format_sql: true
+  activemq:
+    broker-url: ${BROKER_URL}
+    user: ${BROKER_USER}
+    password: ${BROKER_PASSWORD}
 
 resilience4j:
   circuitbreaker:

@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static com.service.working.hours.exception.ErrorCodeMapping.AUTHENTICATION_ERROR_CODE;
+import static com.service.working.hours.exception.ErrorCodeMapping.DEAD_MESSAGE_ERROR_CODE;
 import static com.service.working.hours.exception.ErrorCodeMapping.DEFAULT_CODE;
 import static com.service.working.hours.exception.ErrorCodeMapping.ENTITY_NOT_FOUND_ERROR_CODE;
 import static com.service.working.hours.exception.ErrorCodeMapping.GLOBAL_ERROR_CODE;
@@ -60,6 +61,14 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = buildErrorResponse(ENTITY_NOT_FOUND_ERROR_CODE, exception.getMessage());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = DeadMessageException.class)
+    protected ResponseEntity<ErrorResponse> handleDeadMessageError(DeadMessageException exception) {
+        logError(exception);
+        ErrorResponse error = buildErrorResponse(DEAD_MESSAGE_ERROR_CODE, exception.getMessage());
+
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @Override
