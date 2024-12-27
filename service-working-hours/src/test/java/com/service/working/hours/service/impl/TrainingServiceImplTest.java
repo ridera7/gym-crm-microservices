@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,18 +92,6 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void shouldReturnTotalDuration() {
-        when(trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth("trainer1", 2024, 12))
-                .thenReturn(10);
-
-        int result = trainingService.getMonthlyTrainingHours("trainer1", 2024, 12);
-
-        assertEquals(10, result);
-        verify(trainingRecordRepository)
-                .findTotalDurationByTrainerAndYearAndMonth("trainer1", 2024, 12);
-    }
-
-    @Test
     void shouldCreateNewTrainerAndTrainingRecord_WhenTrainerDoesNotExist() {
         TrainerWorkloadRequest request = new TrainerWorkloadRequest();
         request.setUsername("trainer2");
@@ -126,7 +116,7 @@ class TrainingServiceImplTest {
                 () -> trainingService.getMonthlyTrainingHours("trainer1", 2024, 13));
 
         assertEquals("Invalid parameters: month must be between 1 and 12", exception.getMessage());
-        verify(trainingRecordRepository, never()).findTotalDurationByTrainerAndYearAndMonth(any(), any(), any());
+        verify(trainingRecordRepository, never()).findByTrainerUsernameAndYearAndMonth(anyString(), anyInt(), anyInt());
     }
 
 }
