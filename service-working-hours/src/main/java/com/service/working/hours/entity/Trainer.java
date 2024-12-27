@@ -1,39 +1,35 @@
 package com.service.working.hours.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Document(collection = "trainer")
 @Getter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "trainer", schema = "public")
 public class Trainer {
 
     @Id
     private String username;
 
+    @Field("first_name")
     private String firstName;
+
+    @Field("last_name")
     private String lastName;
 
+    @Field("is_active")
     private boolean isActive;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<TrainingRecord> trainingRecords = new ArrayList<>();
 }

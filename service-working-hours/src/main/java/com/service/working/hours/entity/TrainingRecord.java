@@ -1,39 +1,34 @@
 package com.service.working.hours.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
+@Document(collection = "training_record")
 @Getter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "training_record", schema = "public")
 public class TrainingRecord {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "trainer_username", referencedColumnName = "username")
+    @Id
+    private String id;
+
+    @DBRef
     private Trainer trainer;
 
-    @Column(name = "training_year")
+    @Field("training_year")
     private Integer year;
 
-    @Column(name = "training_month")
+    @Field("training_month")
     private Integer month;
 
+    @Field("duration_summary")
     private Integer durationSummary;
 
 }
