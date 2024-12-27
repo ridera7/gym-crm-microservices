@@ -4,6 +4,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/working_hours
+      username: gcauser
+      password: gcapass
   activemq:
     broker-url: tcp://localhost:61616
     user: gcauser
