@@ -9,7 +9,6 @@ import com.service.working.hours.rest.dto.TrainerWorkloadRequest;
 import com.service.working.hours.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,24 +18,26 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingRecordRepository trainingRecordRepository;
 
     @Override
-    @Transactional
     public void recordTrainingSession(TrainerWorkloadRequest workloadRequest) {
         int year = workloadRequest.getTrainingDate().getYear();
         int month = workloadRequest.getTrainingDate().getMonthValue();
         int duration = workloadRequest.getTrainingDuration();
         String username = workloadRequest.getUsername();
 
-        TrainingRecord trainingRecord = trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month)
-                .orElseGet(() -> createTrainingRecord(workloadRequest));
-
-        updateWorkload(workloadRequest, trainingRecord, duration);
+        trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month)
+                .ifPresentOrElse(
+                        record -> updateWorkload(workloadRequest, record, duration),
+                        () -> saveNewTrainingRecord(workloadRequest, year, month)
+                );
     }
 
     @Override
     public int getMonthlyTrainingHours(String username, Integer year, Integer month) {
         validateMonth(month);
 
-        return trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth(username, year, month);
+        return trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month)
+                .map(TrainingRecord::getDurationSummary)
+                .orElse(0);
     }
 
     private static void validateMonth(Integer month) {
@@ -65,15 +66,20 @@ public class TrainingServiceImpl implements TrainingService {
         trainingRecordRepository.save(updateTrainingRecord);
     }
 
-    private TrainingRecord createTrainingRecord(TrainerWorkloadRequest workloadRequest) {
+    private void saveNewTrainingRecord(TrainerWorkloadRequest workloadRequest, int year, int month) {
+        TrainingRecord newRecord = createTrainingRecord(workloadRequest, year, month);
+        trainingRecordRepository.save(newRecord);
+    }
+
+    private TrainingRecord createTrainingRecord(TrainerWorkloadRequest workloadRequest, int year, int month) {
         Trainer trainer = trainerRepository.findById(workloadRequest.getUsername())
                 .orElseGet(() -> createNewTrainer(workloadRequest));
 
-        return new TrainingRecord().toBuilder()
+        return TrainingRecord.builder()
                 .trainer(trainer)
-                .year(workloadRequest.getTrainingDate().getYear())
-                .month(workloadRequest.getTrainingDate().getMonthValue())
-                .durationSummary(0)
+                .year(year)
+                .month(month)
+                .durationSummary(workloadRequest.getTrainingDuration())
                 .build();
     }
 

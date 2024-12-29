@@ -21,8 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,7 +78,7 @@ class TrainingServiceImplTest {
         request.setActionType(ADD);
 
         Trainer trainer = Trainer.builder()
-                .username("trainer1")
+                .username("John.Doe")
                 .firstName("John")
                 .lastName("Doe")
                 .isActive(true)
@@ -90,15 +94,49 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void shouldReturnTotalDuration() {
-        when(trainingRecordRepository.findTotalDurationByTrainerAndYearAndMonth("trainer1", 2024, 12))
-                .thenReturn(10);
+    void shouldReturnDurationSummary_WhenValidInputs() {
+        String username = "Ivan.Ivanoff";
+        int year = 2024;
+        int month = 5;
+        int expectedDuration = 40;
+        TrainingRecord mockRecord = mock(TrainingRecord.class);
+        when(mockRecord.getDurationSummary()).thenReturn(expectedDuration);
+        when(trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month))
+                .thenReturn(Optional.of(mockRecord));
 
-        int result = trainingService.getMonthlyTrainingHours("trainer1", 2024, 12);
+        int actualDuration = trainingService.getMonthlyTrainingHours(username, year, month);
 
-        assertEquals(10, result);
+        assertEquals(expectedDuration, actualDuration);
         verify(trainingRecordRepository)
-                .findTotalDurationByTrainerAndYearAndMonth("trainer1", 2024, 12);
+                .findByTrainerUsernameAndYearAndMonth(username, year, month);
+    }
+
+    @Test
+    void shouldReturnsZero_WhenNoRecordFound() {
+        String username = "Ivan.Ivanoff";
+        int year = 2024;
+        int month = 6;
+        when(trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month))
+                .thenReturn(Optional.empty());
+
+        int actualDuration = trainingService.getMonthlyTrainingHours(username, year, month);
+
+        assertEquals(0, actualDuration);
+        verify(trainingRecordRepository)
+                .findByTrainerUsernameAndYearAndMonth(username, year, month);
+    }
+
+    @Test
+    void shouldThrowsValidationException_WhenInvalidMonth() {
+        String username = "Ivan.Ivanoff";
+        int year = 2024;
+        int invalidMonth = 13;
+
+        ValidationException exception = assertThrows(ValidationException.class, () ->
+                trainingService.getMonthlyTrainingHours(username, year, invalidMonth));
+
+        assertEquals("Invalid parameters: month must be between 1 and 12", exception.getMessage());
+        verifyNoInteractions(trainingRecordRepository);
     }
 
     @Test
@@ -126,7 +164,7 @@ class TrainingServiceImplTest {
                 () -> trainingService.getMonthlyTrainingHours("trainer1", 2024, 13));
 
         assertEquals("Invalid parameters: month must be between 1 and 12", exception.getMessage());
-        verify(trainingRecordRepository, never()).findTotalDurationByTrainerAndYearAndMonth(any(), any(), any());
+        verify(trainingRecordRepository, never()).findByTrainerUsernameAndYearAndMonth(anyString(), anyInt(), anyInt());
     }
 
 }
