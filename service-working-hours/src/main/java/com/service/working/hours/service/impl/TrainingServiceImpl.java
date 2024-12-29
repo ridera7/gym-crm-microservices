@@ -10,8 +10,6 @@ import com.service.working.hours.service.TrainingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class TrainingServiceImpl implements TrainingService {
@@ -26,14 +24,11 @@ public class TrainingServiceImpl implements TrainingService {
         int duration = workloadRequest.getTrainingDuration();
         String username = workloadRequest.getUsername();
 
-        Optional<TrainingRecord> trainingRecordOpt = trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month);
-
-        if (trainingRecordOpt.isPresent()) {
-            updateWorkload(workloadRequest, trainingRecordOpt.get(), duration);
-        } else {
-            TrainingRecord newRecord = createTrainingRecord(workloadRequest, year, month);
-            trainingRecordRepository.save(newRecord);
-        }
+        trainingRecordRepository.findByTrainerUsernameAndYearAndMonth(username, year, month)
+                .ifPresentOrElse(
+                        record -> updateWorkload(workloadRequest, record, duration),
+                        () -> saveNewTrainingRecord(workloadRequest, year, month)
+                );
     }
 
     @Override
@@ -69,6 +64,11 @@ public class TrainingServiceImpl implements TrainingService {
                 .durationSummary(workload).build();
 
         trainingRecordRepository.save(updateTrainingRecord);
+    }
+
+    private void saveNewTrainingRecord(TrainerWorkloadRequest workloadRequest, int year, int month) {
+        TrainingRecord newRecord = createTrainingRecord(workloadRequest, year, month);
+        trainingRecordRepository.save(newRecord);
     }
 
     private TrainingRecord createTrainingRecord(TrainerWorkloadRequest workloadRequest, int year, int month) {
