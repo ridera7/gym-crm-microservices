@@ -1,0 +1,18 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test_db
+      username: test_user
+      password: test_password
+  liquibase:
+    enabled: false
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+      discovery:
+        enabled: false
+
+server:
+  port: 8085
