@@ -1,5 +1,6 @@
 package com.service.working.hours.cucumber.steps;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.service.working.hours.entity.Trainer;
@@ -20,6 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,20 +31,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor
 public class WorkingHoursStepDef {
 
+    private final static String URL = "/api/v1/trainer/summary";
     private final WebApplicationContext context;
-
     private final MongoTemplate mongoTemplate;
     private final TrainerRepository trainerRepository;
     private final TrainingRecordRepository trainingRecordRepository;
-
-    private final String url = "/api/v1/trainer/summary";
-
     private MockMvc mockMvc;
     private ResultActions resultActions;
 
     @Before
     public void start() {
-        System.out.println("Connected to database: " + mongoTemplate.getDb().getName());
     }
 
     @After
@@ -49,32 +48,11 @@ public class WorkingHoursStepDef {
         mongoTemplate.getDb().drop();
     }
 
-    // TODO
-//    @Given("the following trainer exists in the database:")
-//    public void the_following_trainer_exists_in_the_database(io.cucumber.datatable.DataTable dataTable) {
-//        // Write code here that turns the phrase above into concrete actions
-//        // For automatic transformation, change DataTable to one of
-//        // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
-//        // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
-//        // Double, Byte, Short, Long, BigInteger or BigDecimal.
-//        //
-//        // For other transformations you can register a DataTableType.
-////        throw new io.cucumber.java.PendingException();
-//    }
-
     @When("I add a training for trainer {string} with duration {int} minutes")
     public void i_add_a_training_for_trainer_with_duration_minutes(String trainerUsername, int duration) throws Exception {
-        LocalDate trainingDate = getTestTrainingDate();
-        String[] trainerName = trainerUsername.split("\\.");
-        boolean isActive = true;
-        TrainerWorkloadRequest request = new TrainerWorkloadRequest().username(trainerUsername).firstName(trainerName[0]).lastName(trainerName[1]).isActive(isActive).trainingDate(trainingDate).trainingDuration(duration);
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        String json = createPayload(trainerUsername, duration);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        String json = objectMapper.writeValueAsString(request);
-
-        resultActions = mockMvc.perform(post(url).content(json).contentType("application/json"));
+        resultActions = mockMvc.perform(post(URL).content(json).contentType("application/json"));
 
         resultActions.andExpect(status().isOk());
     }
@@ -100,6 +78,42 @@ public class WorkingHoursStepDef {
     @Then("a new record for trainer {string} should exist")
     public void a_new_record_for_trainer_should_exist(String trainerUsername) {
         isTrainerExistsInDB(trainerUsername);
+    }
+
+    @Given("the following trainer exists in the database:")
+    public void theFollowingTrainerExistsInTheDatabase(io.cucumber.datatable.DataTable dataTable) {
+        List<Map<String, String>> table = dataTable.asMaps(String.class, String.class);
+        LocalDate trainingDate = getTestTrainingDate();
+
+        Trainer trainer = createNewActiveTrainerWithUsername(table.get(0).get("username"));
+        trainerRepository.save(trainer);
+
+        TrainingRecord trainingRecord = TrainingRecord.builder()
+                .trainer(trainer)
+                .year(trainingDate.getYear())
+                .month(trainingDate.getMonthValue())
+                .durationSummary(Integer.valueOf(table.get(0).get("totalDuration")))
+                .build();
+        trainingRecordRepository.save(trainingRecord);
+    }
+
+    private String createPayload(String trainerUsername, int duration) throws JsonProcessingException {
+        LocalDate trainingDate = getTestTrainingDate();
+        String[] trainerName = trainerUsername.split("\\.");
+        boolean isActive = true;
+        TrainerWorkloadRequest request = new TrainerWorkloadRequest()
+                .username(trainerUsername)
+                .firstName(trainerName[0])
+                .lastName(trainerName[1])
+                .isActive(isActive)
+                .trainingDate(trainingDate)
+                .trainingDuration(duration)
+                .actionType(TrainerWorkloadRequest.ActionTypeEnum.ADD);
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper.writeValueAsString(request);
     }
 
     private LocalDate getTestTrainingDate() {

@@ -9,10 +9,9 @@ Feature: Update trainer's total training duration
     Then a new record for trainer "Semen.Semenoff" should exist
     And the total duration for trainer "Semen.Semenoff" should be 45 minutes
 
-  # TO DO
-    #  Scenario: Add training duration to an existing trainer
-#    Given the following trainer exists in the database:
-#      | username       | totalDuration |
-#      | Ivan.Ivanoff   | 120           |
-#    When I add a training for trainer "Ivan.Ivanoff" with duration 60 minutes
-#    Then the total duration for trainer "Ivan.Ivanoff" should be 180 minutes
+      Scenario: Add training duration to an existing trainer
+    Given the following trainer exists in the database:
+      | username       | totalDuration |
+      | Ivan.Ivanoff   | 120           |
+    When I add a training for trainer "Ivan.Ivanoff" with duration 60 minutes
+    Then the total duration for trainer "Ivan.Ivanoff" should be 180 minutes
