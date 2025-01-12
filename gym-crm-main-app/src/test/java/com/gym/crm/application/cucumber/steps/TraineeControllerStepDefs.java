@@ -11,7 +11,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,6 +21,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,10 +53,7 @@ public class TraineeControllerStepDefs {
 
     @When("I send a POST request to {string} with the following data:")
     public void sendPostRequest(String url, List<Map<String, String>> data) throws Exception {
-        String payload = String.format(
-                "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"address\":\"%s\"}",
-                data.get(0).get("firstName"), data.get(0).get("lastName"), data.get(0).get("dateOfBirth"), data.get(0).get("address")
-        );
+        String payload = createPayload(data);
 
         resultActions = mockMvc.perform(
                 post(url)
@@ -71,29 +70,38 @@ public class TraineeControllerStepDefs {
     @Then("the response body should contain:")
     public void verifyResponseBody(Map<String, String> expectedFields) throws Exception {
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println(responseBody);
-        System.out.println(expectedFields);
-        Assertions.assertNotNull(responseBody, "Response body is null");
+
+        assertNotNull(responseBody, "Response body is null");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> actualResponse;
-        actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
+        Map<String, String> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
         });
 
+        checkResponse(expectedFields, actualResponse);
+    }
+
+    private void checkResponse(Map<String, String> expectedFields, Map<String, String> actualResponse) {
         expectedFields.forEach((field, expectedValue) -> {
             if ("(not empty)".equals(expectedValue)) {
-                Assertions.assertTrue(
+                assertTrue(
                         actualResponse.containsKey(field) && !actualResponse.get(field).isEmpty(),
                         "Expected field " + field + " to be not empty"
                 );
             } else {
-                Assertions.assertEquals(
+                assertEquals(
                         expectedValue,
                         actualResponse.get(field),
                         "Mismatch in field: " + field
                 );
             }
         });
+    }
+
+    private String createPayload(List<Map<String, String>> data) {
+        return String.format(
+                "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"address\":\"%s\"}",
+                data.get(0).get("firstName"), data.get(0).get("lastName"), data.get(0).get("dateOfBirth"), data.get(0).get("address")
+        );
     }
 
     private void isTraineeDoesNotExistInDb(String traineeUsername) {
