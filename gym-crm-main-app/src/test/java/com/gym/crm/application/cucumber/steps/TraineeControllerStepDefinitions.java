@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RequiredArgsConstructor
-public class TraineeControllerStepDefs {
+public class TraineeControllerStepDefinitions {
 
     public static final String NOT_EMPTY = "(not empty)";
     public static final String PAYLOAD_TEMPLATE = "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"address\":\"%s\"}";
