@@ -4,6 +4,7 @@ import com.gym.crm.application.entity.Trainee;
 import com.gym.crm.application.entity.User;
 import com.gym.crm.application.repository.TraineeRepository;
 import com.gym.crm.application.repository.UserRepository;
+import io.cucumber.core.internal.com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.core.internal.com.fasterxml.jackson.core.type.TypeReference;
 import io.cucumber.core.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.Before;
@@ -30,9 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor
 public class TraineeControllerStepDefs {
 
+    public static final String NOT_EMPTY = "(not empty)";
+    public static final String PAYLOAD_TEMPLATE = "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"address\":\"%s\"}";
+
     private final WebApplicationContext context;
     private final UserRepository userRepository;
     private final TraineeRepository traineeRepository;
+
     private MockMvc mockMvc;
     private ResultActions resultActions;
 
@@ -55,11 +60,8 @@ public class TraineeControllerStepDefs {
     public void sendPostRequest(String url, List<Map<String, String>> data) throws Exception {
         String payload = createPayload(data);
 
-        resultActions = mockMvc.perform(
-                post(url)
-                        .content(payload)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+        resultActions = mockMvc.perform(post(url).content(payload)
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
     @Then("the response status should be {int}")
@@ -73,35 +75,41 @@ public class TraineeControllerStepDefs {
 
         assertNotNull(responseBody, "Response body is null");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, String> actualResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
-        });
+        Map<String, String> actualResponse = getResponse(responseBody);
 
         checkResponse(expectedFields, actualResponse);
     }
 
-    private void checkResponse(Map<String, String> expectedFields, Map<String, String> actualResponse) {
-        expectedFields.forEach((field, expectedValue) -> {
-            if ("(not empty)".equals(expectedValue)) {
-                assertTrue(
-                        actualResponse.containsKey(field) && !actualResponse.get(field).isEmpty(),
-                        "Expected field " + field + " to be not empty"
-                );
-            } else {
-                assertEquals(
-                        expectedValue,
-                        actualResponse.get(field),
-                        "Mismatch in field: " + field
-                );
-            }
+    private Map<String, String> getResponse(String responseBody) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.readValue(responseBody, new TypeReference<>() {
         });
     }
 
+    private void performActionWithField(Map<String, String> actualResponse, String fieldName, String expectedValue) {
+        if (expectedValue.equals(NOT_EMPTY)) {
+            assertTrue(isFieldNotEmpty(actualResponse, fieldName), "Expected field " + fieldName + " to be not empty");
+
+            return;
+        }
+
+        assertEquals(expectedValue, actualResponse.get(fieldName), "Mismatch in field: " + fieldName);
+    }
+
+    private boolean isFieldNotEmpty(Map<String, String> actualResponse, String field) {
+        return actualResponse.containsKey(field) && !actualResponse.get(field).isEmpty();
+    }
+
+    private void checkResponse(Map<String, String> expectedFields, Map<String, String> actualResponse) {
+        expectedFields.forEach((fieldName, expectedValue) -> performActionWithField(actualResponse, fieldName, expectedValue));
+    }
+
     private String createPayload(List<Map<String, String>> data) {
-        return String.format(
-                "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"dateOfBirth\":\"%s\",\"address\":\"%s\"}",
-                data.get(0).get("firstName"), data.get(0).get("lastName"), data.get(0).get("dateOfBirth"), data.get(0).get("address")
-        );
+        Map<String, String> payload = data.get(0);
+
+        return String.format(PAYLOAD_TEMPLATE,
+                payload.get("firstName"), payload.get("lastName"), payload.get("dateOfBirth"), payload.get("address"));
     }
 
     private void isTraineeDoesNotExistInDb(String traineeUsername) {
@@ -117,19 +125,32 @@ public class TraineeControllerStepDefs {
     }
 
     private void createNewTrainee(String traineeUsername) {
-        String[] traineeName = traineeUsername.split("\\.");
-        User user = User.builder()
-                .firstName(traineeName[0])
-                .lastName(traineeName[1])
-                .username(traineeUsername)
-                .password("password")
-                .isActive(true).build();
+
+        User user = createUser(traineeUsername);
+
         userRepository.save(user);
-        Trainee trainee = Trainee.builder()
+
+        Trainee trainee = createTrainee(user);
+
+        traineeRepository.save(trainee);
+    }
+
+    private Trainee createTrainee(User user) {
+        return Trainee.builder()
                 .id(user.getId())
                 .user(user)
                 .address("address")
                 .dateOfBirth(LocalDate.of(2000, 11, 6)).build();
-        traineeRepository.save(trainee);
+    }
+
+    private User createUser(String username) {
+        String[] userName = username.split("\\.");
+
+        return User.builder()
+                .firstName(userName[0])
+                .lastName(userName[1])
+                .username(username)
+                .password("password")
+                .isActive(true).build();
     }
 }
