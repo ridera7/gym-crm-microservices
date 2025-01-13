@@ -8,3 +8,20 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  liquibase:
+    enabled: false
+  jms:
+    cache:
+      enabled: false
+    listener:
+      auto-startup: false
+  activemq:
+    broker-url: vm://localhost?broker.persistent=false
+
+server:
+  port: 8086
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: INFO
