@@ -1,6 +1,6 @@
 spring:
   application:
-    name: integration-test-service
+    name: gca-automation
   data:
     mongodb:
       uri: mongodb://localhost:27017/test_db

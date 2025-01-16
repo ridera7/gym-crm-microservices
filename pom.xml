@@ -25,7 +25,7 @@
         <module>authentication-service</module>
         <module>gym-crm-main-app</module>
         <module>service-working-hours</module>
-        <module>integration-test-service</module>
+        <module>gca-automation</module>
     </modules>
 
     <dependencyManagement>

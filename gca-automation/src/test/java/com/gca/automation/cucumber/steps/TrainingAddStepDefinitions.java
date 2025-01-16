@@ -1,6 +1,6 @@
-package com.integration.test.service.cucumber.steps;
+package com.gca.automation.cucumber.steps;
 
-import com.integration.test.service.repository.PostgreSqlRepository;
+import com.gca.automation.repository.PostgreSqlRepository;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;

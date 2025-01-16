@@ -1,13 +1,13 @@
-package com.integration.test.service;
+package com.gca.automation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class IntegrationTestServiceApplication {
+public class GcaAutomationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(IntegrationTestServiceApplication.class, args);
+        SpringApplication.run(GcaAutomationApplication.class, args);
     }
 
 }

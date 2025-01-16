@@ -2,7 +2,7 @@ spring:
   application:
     name: gym-crm-application
   profiles:
-    active: test
+    active: local
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}

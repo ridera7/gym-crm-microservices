@@ -1,4 +1,4 @@
-package com.integration.test.service.repository;
+package com.gca.automation.repository;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
