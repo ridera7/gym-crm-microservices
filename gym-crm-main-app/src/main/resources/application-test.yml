@@ -4,9 +4,11 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: testuser
     password: testpassword
+    hikari:
+      maximum-pool-size: 10
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
   liquibase:
     enabled: false
@@ -16,7 +18,11 @@ spring:
     listener:
       auto-startup: false
   activemq:
-    broker-url: vm://localhost?broker.persistent=false
+    broker-url: tcp://localhost:61616
+    user: gcauser
+    password: gcapass
+#  activemq:
+#    broker-url: vm://localhost?broker.persistent=false
 
 server:
   port: 8086
@@ -25,3 +31,7 @@ logging:
   level:
     root: INFO
     org.hibernate.SQL: INFO
+
+security:
+  password:
+    length: 10

@@ -27,7 +27,7 @@ public class GatewayFilter implements Filter {
             return;
         }
 
-        if (!"Gateway".equals(xRequestX)) {
+        if (!xRequestX.equals("Gateway")) {
             httpResponse.setStatus(400);
             httpResponse.getWriter().write("Invalid X-Request-X header value");
             return;

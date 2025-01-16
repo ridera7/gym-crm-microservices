@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: integration-test-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test_db
+      username: test_user
+      password: test_password
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    driver-class-name: org.postgresql.Driver
+    username: testuser
+    password: testpassword
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    enabled: false
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+      discovery:
+        enabled: false
+    compatibility-verifier:
+      enabled: false
+logging:
+  level:
+    org.springframework: INFO
+
+security:
+  password:
+    length: 10
+
+application:
+  server:
+    url: http://localhost:8090
+
+server:
+  port: 8087
+
+testing:
+  port:
+    gym-crm: 8086
+    working-hours: 8085

@@ -1,6 +1,8 @@
 spring:
   application:
     name: service-working-hours
+  profiles:
+    active: test
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/working_hours
