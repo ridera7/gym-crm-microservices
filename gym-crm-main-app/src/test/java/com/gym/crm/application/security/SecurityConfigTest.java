@@ -13,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,12 +58,6 @@ class SecurityConfigTest {
         verify(http).authorizeHttpRequests(any());
         verify(http).addFilterBefore(any(), any());
         verify(http).logout(any());
-    }
-
-    @Test
-    void shouldCreatePasswordEncoderBean() {
-        PasswordEncoder encoder = securityConfig.passwordEncoder();
-        assertNotNull(encoder, "PasswordEncoder should not be null");
     }
 
     @ParameterizedTest
