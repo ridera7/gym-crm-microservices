@@ -1,0 +1,126 @@
+version: "3.8"
+
+services:
+  postgres_db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: gca_db
+      POSTGRES_USER: gcauser
+      POSTGRES_PASSWORD: gcapass
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - gym-crm-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  mongo_db:
+    image: mongo:6.0-rc
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - gym-crm-network
+
+  activemq:
+    image: rmohr/activemq
+    container_name: activemq
+    environment:
+      - ACTIVEMQ_ADMIN_LOGIN=gcaadmin
+      - ACTIVEMQ_ADMIN_PASSWORD=gcaadmin
+    networks:
+      - gym-crm-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - gym-crm-network
+
+  eureka-service:
+    build: ./eureka-service
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - gym-crm-network
+
+  gateway-service:
+    build: ./gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      eureka-service:
+        condition: service_started
+      gym-crm-main-app:
+        condition: service_started
+      service-working-hours:
+        condition: service_started
+    restart: always
+    networks:
+      - gym-crm-network
+
+  authentication-service:
+    build: ./authentication-service
+    environment:
+      DB_URL: jdbc:postgresql://localhost:5432/gca_db
+      DB_USER: gcauser
+      DB_PASSWORD: gcapass
+      EUREKA_URI: http://localhost:8761/eureka
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres_db
+      - eureka-service
+    networks:
+      - gym-crm-network
+
+  gym-crm-main-app:
+    build: ./gym-crm-main-app
+    environment:
+      DB_URL: jdbc:postgresql://localhost:5432/gca_db
+      DB_USER: gcauser
+      DB_PASSWORD: gcapass
+      BROKER_URL: tcp://localhost:61616
+      BROKER_USER: gcauser
+      BROKER_PASSWORD: gcapass
+      EUREKA_URI: http://localhost:8761/eureka
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres_db
+      - eureka-service
+    networks:
+      - gym-crm-network
+
+  service-working-hours:
+    build: ./service-working-hours
+    environment:
+      EUREKA_URI: http://localhost:8761/eureka
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo_db
+      - eureka-service
+    networks:
+      - gym-crm-network
+
+volumes:
+  postgresql_data:
+  mongodb_data:
+
+networks:
+  gym-crm-network:

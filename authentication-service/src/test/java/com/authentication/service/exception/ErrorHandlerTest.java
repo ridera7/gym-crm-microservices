@@ -25,7 +25,7 @@ class ErrorHandlerTest {
         ResponseEntity<ErrorResponse> response = errorHandler.handleGlobalError(exception);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Global Error: Test runtime exception", Objects.requireNonNull(response.getBody()).getError());
+        assertEquals("Global Error: auth:Test runtime exception", Objects.requireNonNull(response.getBody()).getError());
     }
 
     @Test

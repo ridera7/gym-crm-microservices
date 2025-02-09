@@ -17,8 +17,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 
 import java.time.LocalDate;
@@ -58,8 +56,6 @@ class TrainingServiceTest {
     @DisplayName("Should create training")
     void shouldSaveTraining() {
         when(trainingRepository.save(TRANSIENT_TRAINING)).thenReturn(TRANSIENT_TRAINING);
-        when(workingHoursClient.modifyTrainerWorkload(any(TrainerWorkloadRequest.class)))
-                .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
         trainingService.save(TRANSIENT_TRAINING);
 
