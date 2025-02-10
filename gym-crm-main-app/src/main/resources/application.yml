@@ -18,7 +18,7 @@ spring:
         show-sql: true
         format_sql: true
   activemq:
-    broker-url: ${BROKER_URL}
+    broker-url: ${BROKER_URL:tcp://localhost:61616}
     user: ${BROKER_USER}
     password: ${BROKER_PASSWORD}
 

@@ -3,13 +3,13 @@ spring:
     name: service-working-hours
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/working_hours
-      username: gcauser
-      password: gcapass
+      uri: ${MONGO_URL:mongodb://127.0.0.1:27017/working_hours}
+      username: ${MONGO_USER:gcauser}
+      password: ${MONGO_PASSWORD:gcapass}
   activemq:
-    broker-url: tcp://localhost:61616
-    user: gcauser
-    password: gcapass
+    broker-url: ${BROKER_URL:tcp://localhost:61616}
+    user: ${BROKER_USER}
+    password: ${BROKER_PASSWORD}
 
 server:
   port: 8081

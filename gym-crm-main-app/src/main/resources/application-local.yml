@@ -1,17 +1,13 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/gca_db
-    username: gcauser
-    password: gcapass
   jpa:
     properties:
       hibernate:
         show-sql: true
         format_sql: true
   activemq:
-    broker-url: tcp://localhost:61616
-    user: gcauser
-    password: gcapass
+    broker-url: ${BROKER_URL:tcp://localhost:61616}
+    user: ${BROKER_USER:gcauser}
+    password: ${BROKER_PASSWORD:gcapass}
 
 server:
   port: 8082

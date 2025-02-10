@@ -13,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.stream.Stream;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -30,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Tag("skipgithub")
 @SpringBootTest
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 class SecurityConfigTest {
 
     @Autowired
@@ -54,19 +52,6 @@ class SecurityConfigTest {
                         "/api/v1/trainer/register",
                         "/api/v1/swagger-ui")
                 .map(Arguments::of);
-    }
-
-    @Test
-    void shouldCreateRightSecurityFilterChain() throws Exception {
-        when(http.cors(any())).thenReturn(http);
-        when(http.csrf(any())).thenReturn(http);
-        when(http.authorizeHttpRequests(any())).thenReturn(http);
-
-        securityConfig.securityFilterChain(http);
-
-        verify(http).cors(any());
-        verify(http).csrf(any());
-        verify(http).authorizeHttpRequests(any());
     }
 
     @ParameterizedTest

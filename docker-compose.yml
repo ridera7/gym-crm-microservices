@@ -58,6 +58,8 @@ services:
 
   gateway-service:
     build: ./gateway-service
+    environment:
+      EUREKA_URI: http://eureka-service:8761/eureka
     ports:
       - "8080:8080"
     depends_on:
@@ -76,10 +78,10 @@ services:
   authentication-service:
     build: ./authentication-service
     environment:
-      DB_URL: jdbc:postgresql://localhost:5432/gca_db
+      DB_URL: jdbc:postgresql://postgres_db:5432/gca_db
       DB_USER: gcauser
       DB_PASSWORD: gcapass
-      EUREKA_URI: http://localhost:8761/eureka
+      EUREKA_URI: http://eureka-service:8761/eureka
     ports:
       - "8083:8083"
     depends_on:
@@ -91,15 +93,16 @@ services:
   gym-crm-main-app:
     build: ./gym-crm-main-app
     environment:
-      DB_URL: jdbc:postgresql://localhost:5432/gca_db
+      DB_URL: jdbc:postgresql://postgres_db:5432/gca_db
       DB_USER: gcauser
       DB_PASSWORD: gcapass
-      BROKER_URL: tcp://localhost:61616
+      BROKER_URL: tcp://activemq:61616
       BROKER_USER: gcauser
       BROKER_PASSWORD: gcapass
-      EUREKA_URI: http://localhost:8761/eureka
+      EUREKA_URI: http://eureka-service:8761/eureka
     ports:
       - "8082:8082"
+    restart: on-failure
     depends_on:
       - postgres_db
       - eureka-service
@@ -109,7 +112,13 @@ services:
   service-working-hours:
     build: ./service-working-hours
     environment:
-      EUREKA_URI: http://localhost:8761/eureka
+      MONGO_URL: mongodb://mongo_db:27017/working_hours
+      MONGO_USER: gcauser
+      MONGO_PASSWORD: gcapass
+      BROKER_URL: tcp://activemq:61616
+      BROKER_USER: gcauser
+      BROKER_PASSWORD: gcapass
+      EUREKA_URI: http://eureka-service:8761/eureka
     ports:
       - "8081:8081"
     depends_on:
@@ -124,3 +133,4 @@ volumes:
 
 networks:
   gym-crm-network:
+    driver: bridge
