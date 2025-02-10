@@ -58,6 +58,7 @@ public interface TraineeMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "trainers", ignore = true)
+    @Mapping(target = "trainings", ignore = true)
     @Mapping(source = "firstName", target = "user.firstName")
     @Mapping(source = "lastName", target = "user.lastName")
     @Mapping(source = "dateOfBirth", target = "dateOfBirth")
@@ -66,6 +67,7 @@ public interface TraineeMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "trainers", ignore = true)
+    @Mapping(target = "trainings", ignore = true)
     @Mapping(source = "firstName", target = "user.firstName")
     @Mapping(source = "lastName", target = "user.lastName")
     @Mapping(source = "dateOfBirth", target = "dateOfBirth")

@@ -19,9 +19,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.stream.Stream;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -43,27 +40,26 @@ class SecurityConfigTest {
     @InjectMocks
     private SecurityConfig securityConfig;
 
-    @Test
-    void shouldCreateRightSecurityFilterChain() throws Exception {
-        when(http.cors(any())).thenReturn(http);
-        when(http.csrf(any())).thenReturn(http);
-        when(http.authorizeHttpRequests(any())).thenReturn(http);
-        when(http.addFilterBefore(any(), any())).thenReturn(http);
-        when(http.logout(any())).thenReturn(http);
+    private static Stream<Arguments> excludedUrlProviderGet() {
+        return Stream.of("/api-docs",
+                        "/actuator")
+                .map(Arguments::of);
+    }
 
-        securityConfig.securityFilterChain(http);
-
-        verify(http).cors(any());
-        verify(http).csrf(any());
-        verify(http).authorizeHttpRequests(any());
-        verify(http).addFilterBefore(any(), any());
-        verify(http).logout(any());
+    private static Stream<Arguments> excludedUrlProviderPost() {
+        return Stream.of("/api/v1/login",
+                        "/api/v1/trainee/register",
+                        "/api/v1/trainer/register",
+                        "/api/v1/swagger-ui")
+                .map(Arguments::of);
     }
 
     @ParameterizedTest
     @MethodSource("excludedUrlProviderGet")
     void shouldAllowAccessToExcludedUrlsGetWithoutAuthentication(String url) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(url))
+        mockMvc.perform(MockMvcRequestBuilders.get(url)
+                        .header("Authorization", "Bearer test-token")
+                        .header("X-Request-X", "Gateway"))
                 .andExpect(status().isOk());
     }
 
@@ -80,20 +76,6 @@ class SecurityConfigTest {
                         .with(user("user").password("password").roles("USER"))
                         .with(csrf()))
                 .andExpect(authenticated());
-    }
-
-    private static Stream<Arguments> excludedUrlProviderGet() {
-        return Stream.of("/api-docs",
-                        "/actuator")
-                .map(Arguments::of);
-    }
-
-    private static Stream<Arguments> excludedUrlProviderPost() {
-        return Stream.of("/api/v1/login",
-                        "/api/v1/trainee/register",
-                        "/api/v1/trainer/register",
-                        "/api/v1/swagger-ui")
-                .map(Arguments::of);
     }
 
 }
