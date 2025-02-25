@@ -21,17 +21,17 @@ public class GatewayFilter implements Filter {
 
         String xRequestX = httpRequest.getHeader("X-Request-X");
 
-        if (xRequestX == null || xRequestX.isEmpty()) {
-            httpResponse.setStatus(400);
-            httpResponse.getWriter().write("Missing X-Request-X header");
-            return;
-        }
-
-        if (!"Gateway".equals(xRequestX)) {
-            httpResponse.setStatus(400);
-            httpResponse.getWriter().write("Invalid X-Request-X header value");
-            return;
-        }
+//        if (xRequestX == null || xRequestX.isEmpty()) {
+//            httpResponse.setStatus(400);
+//            httpResponse.getWriter().write("Missing X-Request-X header");
+//            return;
+//        }
+//
+//        if (!"Gateway".equals(xRequestX)) {
+//            httpResponse.setStatus(400);
+//            httpResponse.getWriter().write("Invalid X-Request-X header value");
+//            return;
+//        }
 
         chain.doFilter(request, response);
     }

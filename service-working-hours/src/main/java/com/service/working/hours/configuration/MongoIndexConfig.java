@@ -18,9 +18,9 @@ public class MongoIndexConfig {
 
     @PostConstruct
     public void ensureIndexes() {
-        IndexOperations trainerIndexOps = mongoTemplate.indexOps(Trainer.class);
-        trainerIndexOps.ensureIndex(new Index().on("firstName", org.springframework.data.domain.Sort.Direction.ASC));
-        trainerIndexOps.ensureIndex(new Index().on("lastName", org.springframework.data.domain.Sort.Direction.ASC));
+//        IndexOperations trainerIndexOps = mongoTemplate.indexOps(Trainer.class);
+//        trainerIndexOps.ensureIndex(new Index().on("firstName", org.springframework.data.domain.Sort.Direction.ASC));
+//        trainerIndexOps.ensureIndex(new Index().on("lastName", org.springframework.data.domain.Sort.Direction.ASC));
     }
 }
 

@@ -8,4 +8,5 @@ ENV MONGO_PASSWORD=gcapass
 ENV BROKER_URL=tcp://localhost:61616
 ENV BROKER_USER=gcauser
 ENV BROKER_PASSWORD=gcapass
+EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "service-working-hours.jar"]

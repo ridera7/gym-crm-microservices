@@ -17,7 +17,7 @@ public class TrainerWorkloadListener {
         this.trainingService = trainingService;
     }
 
-    @JmsListener(destination = "working.hours.queue")
+//    @JmsListener(destination = "working.hours.queue")
     public void processTrainerWorkload(TrainerWorkloadRequest workloadRequest) {
         try {
             trainingService.recordTrainingSession(workloadRequest);

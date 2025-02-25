@@ -1,9 +1,9 @@
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY target/gym-crm-main-app-0.0.1-SNAPSHOT.jar gym-crm-main-app.jar
-ENV DB_URL=jdbc:postgresql://localhost:5432/gca_db
-ENV DB_USER=gcauser
-ENV DB_PASSWORD=gcapass
+ENV DB_URL="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL"
+ENV DB_USER=sa
+ENV DB_PASSWORD=sa
 ENV BROKER_URL=tcp://localhost:61616
 ENV BROKER_USER=gcauser
 ENV BROKER_PASSWORD=gcapass

@@ -21,11 +21,11 @@ public class AuthorizationFilter implements Filter {
 
         String authorization = httpRequest.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            httpResponse.setStatus(401);
-            httpResponse.getWriter().write("Missing Authorization Bearer token");
-            return;
-        }
+//        if (authorization == null || !authorization.startsWith("Bearer ")) {
+//            httpResponse.setStatus(401);
+//            httpResponse.getWriter().write("Missing Authorization Bearer token");
+//            return;
+//        }
 
         chain.doFilter(request, response);
     }
