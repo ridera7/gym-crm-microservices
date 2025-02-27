@@ -21,6 +21,9 @@ spring:
     broker-url: ${BROKER_URL:tcp://localhost:61616}
     user: ${BROKER_USER}
     password: ${BROKER_PASSWORD}
+  cloud:
+    discovery:
+      enabled: false
 
 resilience4j:
   circuitbreaker:
