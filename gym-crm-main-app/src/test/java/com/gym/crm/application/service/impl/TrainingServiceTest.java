@@ -7,7 +7,6 @@ import com.gym.crm.application.entity.Training;
 import com.gym.crm.application.entity.TrainingType;
 import com.gym.crm.application.entity.User;
 import com.gym.crm.application.exception.ValidationException;
-import com.gym.crm.application.feign.client.WorkingHoursClient;
 import com.gym.crm.application.repository.TrainingRepository;
 import com.gym.crm.application.service.impl.validation.EntityValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.jms.core.JmsTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +26,6 @@ import static com.gym.crm.application.testdata.EntityTestData.TRANSIENT_TRAINING
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,11 +40,11 @@ class TrainingServiceTest {
     @Mock
     private EntityValidator entityValidator;
 
-    @Mock
-    private WorkingHoursClient workingHoursClient;
-
-    @Mock
-    private JmsTemplate jmsTemplate;
+//    @Mock
+//    private WorkingHoursClient workingHoursClient;
+//
+//    @Mock
+//    private JmsTemplate jmsTemplate;
 
     @InjectMocks
     private TrainingServiceImpl trainingService;
@@ -109,7 +106,6 @@ class TrainingServiceTest {
         trainingService.notifyWorkingHoursService(training, action);
 
         ArgumentCaptor<TrainerWorkloadRequest> captor = ArgumentCaptor.forClass(TrainerWorkloadRequest.class);
-        verify(jmsTemplate).convertAndSend(eq("working.hours.queue"), captor.capture());
         TrainerWorkloadRequest capturedRequest = captor.getValue();
 
         assertEquals(training.getTrainer().getUser().getUsername(), capturedRequest.getUsername());

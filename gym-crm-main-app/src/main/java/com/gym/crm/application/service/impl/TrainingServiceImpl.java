@@ -1,5 +1,6 @@
 package com.gym.crm.application.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.crm.application.dto.client.TrainerWorkloadRequest;
 import com.gym.crm.application.dto.criteria.TrainingsListCriteria;
 import com.gym.crm.application.entity.Trainer;
@@ -11,9 +12,11 @@ import com.gym.crm.application.service.TrainingService;
 import com.gym.crm.application.service.impl.validation.EntityValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 import java.util.List;
 
@@ -26,7 +29,11 @@ public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingRepository repository;
     private final EntityValidator validator;
-    private final JmsTemplate jmsTemplate;
+    private final SqsClient sqsClient;
+    private final ObjectMapper objectMapper;
+
+    @Value("${cloud.aws.sqs.queues.mainQueue}")
+    private String queueUrl;
 
     @Override
     @Transactional
@@ -78,7 +85,13 @@ public class TrainingServiceImpl implements TrainingService {
                 .build();
 
         try {
-            jmsTemplate.convertAndSend("working.hours.queue", request);
+            String jsonString = objectMapper.writeValueAsString(request);
+
+            sqsClient.sendMessage(SendMessageRequest.builder()
+                    .queueUrl(queueUrl)
+                    .messageBody(jsonString)
+                    .messageGroupId("my-group-1")
+                    .build());
             log.info("Message sent to working.hours.queue: {}", request);
         } catch (Exception e) {
             log.error("Failed to send message to working.hours.queue", e);
