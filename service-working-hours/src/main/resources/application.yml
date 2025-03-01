@@ -6,11 +6,9 @@ spring:
       uri: ${MONGO_URL:mongodb://127.0.0.1:27017/working_hours}
       username: ${MONGO_USER:gcauser}
       password: ${MONGO_PASSWORD:gcapass}
-  activemq:
-    broker-url: ${BROKER_URL:tcp://localhost:61616}
-    user: ${BROKER_USER}
-    password: ${BROKER_PASSWORD}
-
+  cloud:
+    discovery:
+      enabled: false
 server:
   port: 8081
 
@@ -31,3 +29,11 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %X{transactionId} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %X{transactionId} - %msg%n"
+
+cloud:
+  aws:
+    region: us-east-1
+    sqs:
+      enabled: true
+      queues:
+        mainQueue: ${QUEUE_URL}
